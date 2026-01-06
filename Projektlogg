@@ -1,0 +1,169 @@
+In sample test med EMA_fast= 75 och EMA_slow= 125:
+Market: US500
+Trades: 149
+Total PnL (points): 1265.2389
+Gross Profit: 3471.9941
+Gross Loss: -2206.7552
+Profit Factor: 1.5733
+Winrate: 0.4027
+Avg Win: 57.8666
+Avg Loss: -24.7950
+Expectancy (avg/trade): 8.4915
+Max Drawdown (points): 321.4070
+Max Losing Streak (trades): 6
+PnL/Max DD: 3.94
+Sharpe (trade-level): 1.8861
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Resultaten är robusta för en enkel trendföljande regim och fullt rimliga för S&P 500 under perioden. Låg träffsäkerhet men stora vinnare, average win är mer än dubbelt så stor som average loss vilket driver expectancy. PnL/Max DD är väldigt bra, för varje punkt i drawdown
+gör strategin nästan 4 punkter i total vinst. För trade-baserad Sharpe är detta mycket bra. Det indikerar konsekvent edge, relativt jämn distribution av returns och låg noise-trading. Strategin är inte heller känslig för kostnader.
+Vi testar närliggande EMA värden för både fast och slow för att robusthetstesta strategin och validera att 75 och 125 inte är några slumpmässiga värden som råkar ha edge.
+
+85/135:
+Trades: 123
+Total PnL (points): 1272.5120
+Gross Profit: 3397.8181
+Gross Loss: -2125.3061
+Profit Factor: 1.5987
+Winrate: 0.4146
+Avg Win: 66.6239
+Avg Loss: -29.5181
+Expectancy (avg/trade): 10.3456
+Max Drawdown (points): 307.5820
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 1.8150
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+80/130:
+Trades: 133
+Total PnL (points): 1374.4689
+Gross Profit: 3441.8000
+Gross Loss: -2067.3311
+Profit Factor: 1.6649
+Winrate: 0.3910
+Avg Win: 66.1885
+Avg Loss: -25.5226
+Expectancy (avg/trade): 10.3344
+Max Drawdown (points): 292.1020
+Max Losing Streak (trades): 9
+Sharpe (trade-level): 1.9731
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+70/120:
+Trades: 153
+Total PnL (points): 1600.1519
+Gross Profit: 3684.3121
+Gross Loss: -2084.1602
+Profit Factor: 1.7678
+Winrate: 0.3987
+Avg Win: 60.3986
+Avg Loss: -22.6539
+Expectancy (avg/trade): 10.4585
+Max Drawdown (points): 275.3690
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 2.3101
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+65/115:
+Trades: 159
+Total PnL (points): 1504.1000
+Gross Profit: 3682.0011
+Gross Loss: -2177.9011
+Profit Factor: 1.6906
+Winrate: 0.3836
+Avg Win: 60.3607
+Avg Loss: -22.2235
+Expectancy (avg/trade): 9.4597
+Max Drawdown (points): 242.1550
+Max Losing Streak (trades): 9
+Sharpe (trade-level): 2.1438
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+60/110:
+Trades: 170
+Total PnL (points): 1414.7243
+Gross Profit: 3767.7241
+Gross Loss: -2352.9999
+Profit Factor: 1.6012
+Winrate: 0.3941
+Avg Win: 56.2347
+Avg Loss: -22.8447
+Expectancy (avg/trade): 8.3219
+Max Drawdown (points): 257.2580
+Max Losing Streak (trades): 10
+Sharpe (trade-level): 2.0342
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+Det finns edge i alla tester vilket validerar att strategi idén inte har slumpmässig edge. Sweet spotten ligger på 70/120 så vi fortsätter med de värdena. Nu går vi vidare till att kolla på optimeringsfilter. Eftersom strategin är fundamentalt trendföljande, är adx tröskel
+en möjlig kanditat för att filtrera ut onödiga signaler. I nästa test sätts adx tröskeln på 20, alltså strategin går bara in i positioner ifall adx ligger över 20:
+Trades: 101
+Total PnL (points): 1538.3549
+Gross Profit: 2770.1671
+Gross Loss: -1231.8122
+Profit Factor: 2.2489
+Winrate: 0.4356
+Avg Win: 62.9583
+Avg Loss: -21.6107
+Expectancy (avg/trade): 15.2312
+Max Drawdown (points): 198.2980
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 2.6400
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+ADX gör exakt det man vill se, det filtrerar bort fel regimer, förbättrar payoffen och sänker variance per trade. Antalet trades gick ner signifikant samtidigt som totala pnl är minimalt minre men i princip densamma. Tillägsvis ser vi förbättringar i alla andra huvudtal.
+Det blir alltså mer "quality over quantity". Test på adx 15/25 för att validera adx:
+
+15:
+Trades: 129
+Total PnL (points): 1882.5460
+Gross Profit: 3481.7801
+Gross Loss: -1599.2342
+Profit Factor: 2.1772
+Winrate: 0.4264
+Avg Win: 63.3051
+Avg Loss: -21.6113
+Expectancy (avg/trade): 14.5934
+Max Drawdown (points): 198.2980
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 2.8483
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+10:
+Trades: 150
+Total PnL (points): 1540.4809
+Gross Profit: 3622.3011
+Gross Loss: -2081.8202
+Profit Factor: 1.7400
+Winrate: 0.3933
+Avg Win: 61.3949
+Avg Loss: -22.8771
+Expectancy (avg/trade): 10.2699
+Max Drawdown (points): 275.3690
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 2.2303
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+25:
+Trades: 83
+Total PnL (points): 1010.8499
+Gross Profit: 2005.3861
+Gross Loss: -994.5362
+Profit Factor: 2.0164
+Winrate: 0.4217
+Avg Win: 57.2967
+Avg Loss: -20.7195
+Expectancy (avg/trade): 12.1789
+Max Drawdown (points): 198.2980
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 2.2260
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+
+Detta visar att adx är robust, vi går vidare med 15 som tröskel eftersom det är sweet spot. 25 filtrerar bort för många trades och 10 filterar bort för få. 15 har presterat bättre än 20. Alltså låses värdena EMA_fast=70, EMA_slow=120 och ADX_threshold=15
