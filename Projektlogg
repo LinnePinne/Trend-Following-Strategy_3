@@ -166,4 +166,134 @@ Sharpe (trade-level): 2.2260
 Spread (points): 0.8000
 Commission RT (points): 0.1000
 
-Detta visar att adx är robust, vi går vidare med 15 som tröskel eftersom det är sweet spot. 25 filtrerar bort för många trades och 10 filterar bort för få. 15 har presterat bättre än 20. Alltså låses värdena EMA_fast=70, EMA_slow=120 och ADX_threshold=15
+Detta visar att adx är robust, vi går vidare med 15 som tröskel eftersom det är sweet spot. 25 filtrerar bort för många trades och 10 filterar bort för få. 15 har presterat bättre än 20. Alltså låses värdena EMA_fast=70, EMA_slow=120 och ADX_threshold=15. Nästa 
+optimeringssteg är att kolla på exit-förfining, volatilitets-justering och entry-timing. Som exit-förfining testar vi trailing exits, idén här är att få upp average win. Volatilitets-justering kan användas för posistion sizing eller stops, där t.ex. ATR är en 
+kandidat. Entry-timing kan användas för att separera regim från entry, just nu använder vi ma crossover som entry men vi skulle kunna testa att använda det som trend-regim signal och ha entry på t.ex. en pullback. Vi börjar att kolla på en entry-timing där vi lägger 
+crossover som trend_state och om vi är i trend_state samtdigt som adx > 20 väntar vi ett vissta antal (n) bars där vi väntar på den n:te barens close och om den är över hela vänteperiodens high så får vi entry. Tanken med detta är att det ska validera ifall marknaden 
+faktiskt har börjat trenda. Vi testar med n=5:
+Trades: 136
+Total PnL (points): 1279.4030
+Gross Profit: 3288.0661
+Gross Loss: -2008.6630
+Profit Factor: 1.6369
+Winrate: 0.4191
+Avg Win: 57.6854
+Avg Loss: -25.4261
+Expectancy (avg/trade): 9.4074
+Max Drawdown (points): 294.2250
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 1.9408
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Detta är en klar försämring. Dessa resultat motbevisar våran hypotes så vi fortsätter optimeringen med våran låsa baseline. Vi testar inte någon typ av delayed entry eftersom det är mycket sannolikt att vi får liknande resultat. Däremot kan ATR anänds som entry filter,
+där strategin endast genererar en signal om marknaden inte är i en whipsaw-zon givet av ATR. Exempelvis: Kräv att Close ligger minst k * ATR över EMA_slow eller över cross nivån. Vi testar med regeln close - ema_medium >= K_ATR * atr. Alltså att avståndet pris har till
+ema_medium ska vara ett minst antal punkter som redogörs av K_ATR * atr. Exempelvis om vi sätter K_ATR till 0.25 och atr är 40 vilket är ganska hög volatilitet så måste pris vara 0.25 * 40 =10 punkter över ema_medium: 
+Trades: 128
+Total PnL (points): 1889.1460
+Gross Profit: 3481.7801
+Gross Loss: -1592.6342
+Profit Factor: 2.1862
+Winrate: 0.4297
+Avg Win: 63.3051
+Avg Loss: -21.8169
+Expectancy (avg/trade): 14.7590
+Max Drawdown (points): 198.2980
+Max Losing Streak (trades): 5
+Sharpe (trade-level): 2.8596
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Vi får i princip exakt samma resultat där endast en trade filtreras bort, vilket säger att våran baseline strategi redan filtrerar ut whipsaw-zoner eftersom själva crossovern kräver att pris går upp relativt fort så att EMA(70) kommer över EMA (120). Vi går vidare utan 
+entry optimering, vi behåller baseline och går över till exit optimering. Våran nuvarande exit är en simpel recross där EMA_fast ska gå under EMA_medium, detta kan lämna en hel del orealiserade vinster på bordet. Eftersom det är en trend strategi bör optimerade
+exits vara trend-respekterande. Istället för en simpel recross testar vi istället att EMA_fast måste vara under EMA_medium ett visst antal bars, ifall detta resulterar i bättre resultat kan vi konstatera att baseline har många fake recrosses, där trenden oftast fortsätter
+efter en bar recross. Ifall resultaten blir sämre vet vi att de pengar vi möjligtvis lämnar på bordet ligger innan själva recrossen, i vilket fall vi vill testa trailing stops. Vi börjar med att vänta 7 bars efter recross för att se om trenden faktiskt bytt riktning:
+Trades: 124
+Total PnL (points): 2022.3390
+Gross Profit: 3542.8241
+Gross Loss: -1520.4851
+Profit Factor: 2.3301
+Winrate: 0.4435
+Avg Win: 64.4150
+Avg Loss: -22.0360
+Expectancy (avg/trade): 16.3092
+Max Drawdown (points): 216.4990
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 3.0522
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Bättre resultat i alla nyckeltal men vi betalar med högre dd. Detta visar att en 7 bar väntetid ignorerar korta fake recrosses, vi sitter kvar i trenden genom minor pullbacks och på så sätt låter vi vinnarna fortsätta lägnre. max DD ökas troligtvis för att vi går ut ur
+en position senare och kan därför ge tillbaka mer av vinsterna. Denna metod kräver en grid test, vi testar med närliggande värden för antal bars. 
+10:
+Trades: 123
+Total PnL (points): 2044.6040
+Gross Profit: 3528.5061
+Gross Loss: -1483.9021
+Profit Factor: 2.3779
+Winrate: 0.4472
+Avg Win: 64.1547
+Avg Loss: -21.8221
+Expectancy (avg/trade): 16.6228
+Max Drawdown (points): 188.1290
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 3.1219
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+5: 
+Trades: 124
+Total PnL (points): 1963.2400
+Gross Profit: 3509.4631
+Gross Loss: -1546.2231
+Profit Factor: 2.2697
+Winrate: 0.4435
+Avg Win: 63.8084
+Avg Loss: -22.4090
+Expectancy (avg/trade): 15.8326
+Max Drawdown (points): 191.5000
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 2.9617
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+12:
+Trades: 123
+Total PnL (points): 1975.0521
+Gross Profit: 3539.4281
+Gross Loss: -1564.3760
+Profit Factor: 2.2625
+Winrate: 0.4309
+Avg Win: 66.7817
+Avg Loss: -22.3482
+Expectancy (avg/trade): 16.0573
+Max Drawdown (points): 209.3840
+Max Losing Streak (trades): 4
+Sharpe (trade-level): 2.9311
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+10 bars är bäst. Vi överväger denna optimering men testar trailing stops innan vi går vidare. Vi testar att använda ATR för partial trailing stops:
+Trades: 130
+Total PnL (points): -26.3334
+Gross Profit: 797.3848
+Gross Loss: -823.7182
+Profit Factor: 0.9680
+Winrate: 0.3692
+Avg Win: 16.6122
+Avg Loss: -10.0453
+Expectancy (avg/trade): -0.2026
+Max Drawdown (points): 252.4626
+Max Losing Streak (trades): 8
+Sharpe (trade-level): -0.1166
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Vi väljer såklart att avancera med delayed exit metoden till out of sample testing. SP500 2021 - 2025 out of sample backtest:
+Trades: 79
+Total PnL (points): 478.4800
+Gross Profit: 4035.7500
+Gross Loss: -3557.2700
+Profit Factor: 1.1345
+Winrate: 0.4304
+Avg Win: 118.6985
+Avg Loss: -79.0504
+Expectancy (avg/trade): 6.0567
+Max Drawdown (points): 1109.3560
+Max Losing Streak (trades): 10
+Sharpe (trade-level): 0.4123
+Spread (points): 0.8000
+Commission RT (points): 0.1000
