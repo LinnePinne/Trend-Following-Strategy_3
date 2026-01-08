@@ -283,17 +283,17 @@ Sharpe (trade-level): -0.1166
 Spread (points): 0.8000
 Commission RT (points): 0.1000
 Vi väljer såklart att avancera med delayed exit metoden till out of sample testing. SP500 2021 - 2025 out of sample backtest:
-Trades: 79
-Total PnL (points): 478.4800
-Gross Profit: 4035.7500
-Gross Loss: -3557.2700
-Profit Factor: 1.1345
-Winrate: 0.4304
-Avg Win: 118.6985
-Avg Loss: -79.0504
-Expectancy (avg/trade): 6.0567
-Max Drawdown (points): 1109.3560
+Trades: 84
+Total PnL (points): 596.3410
+Gross Profit: 4094.2660
+Gross Loss: -3497.9250
+Profit Factor: 1.1705
+Winrate: 0.4167
+Avg Win: 116.9790
+Avg Loss: -71.3862
+Expectancy (avg/trade): 7.0993
+Max Drawdown (points): 950.1480
 Max Losing Streak (trades): 10
-Sharpe (trade-level): 0.4123
+Sharpe (trade-level): 0.5538
 Spread (points): 0.8000
 Commission RT (points): 0.1000
