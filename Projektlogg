@@ -297,3 +297,164 @@ Max Losing Streak (trades): 10
 Sharpe (trade-level): 0.5538
 Spread (points): 0.8000
 Commission RT (points): 0.1000
+Positiv expectancy men väldigt hög drawdown jämfört med in sample testet. Dessutom kollapsar sharpe. Strategin är long only så under 2022, som var en bear market för us equities presterar strategin riktig dåligt. Åren efter, 2023, 24 och 25 så presterade strategin bra 
+och gjorde nya equity highs. Som enskild strategi hade detta inte varit ett accepterar out of sample test, vi får se hur det blir i portfölj simulationen senare, men det är inte omöjligt att drawdownen under 2022 är -30 till -40%. Eftersom tanken är att strategin ska 
+handla på fler US equities och kombineras tillsammans med våran mean reversion strategi så fortsätter vi med dessa resultat och går in på fulla tester (2012-2025) på andra US equities samt sp500 för hela perioden så vi kan jämföra. 
+US500:
+Trades: 201
+Total PnL (points): 2623.5010
+Gross Profit: 7524.3551
+Gross Loss: -4900.8541
+Profit Factor: 1.5353
+Winrate: 0.4378
+Avg Win: 85.5040
+Avg Loss: -43.3704
+Expectancy (avg/trade): 13.0522
+Max Drawdown (points): 1109.3560
+Max Losing Streak (trades): 10
+Sharpe (trade-level): 1.9881
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+US30:
+Trades: 218
+Total PnL (points): 24090.2910
+Gross Profit: 64862.2960
+Gross Loss: -40772.0050
+Profit Factor: 1.5909
+Winrate: 0.4174
+Avg Win: 712.7725
+Avg Loss: -321.0394
+Expectancy (avg/trade): 110.5059
+Max Drawdown (points): 6852.2100
+Max Losing Streak (trades): 9
+Sharpe (trade-level): 2.2435
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+US100:
+Trades: 222
+Total PnL (points): 7882.3149
+Gross Profit: 28356.8489
+Gross Loss: -20474.5340
+Profit Factor: 1.3850
+Winrate: 0.4099
+Avg Win: 311.6137
+Avg Loss: -156.2942
+Expectancy (avg/trade): 35.5059
+Max Drawdown (points): 4199.1940
+Max Losing Streak (trades): 6
+Sharpe (trade-level): 1.4554
+Spread (points): 0.8000
+Commission RT (points): 0.1000
+Bra resultat och vi kan absolut kombinera detta i våran us equities portfölj tillsammans med mean reversion strategin. Nästa steg är portfölj simulation där vi kombinerar alla tre marknader i en backtest och räknar resulat i pengar istället för index points.
+Equity Start: 50000.0000
+Equity End: 124348.8819
+CAGR: 0.0676
+Max Drawdown %: -22.0271
+Sharpe (ann.): 0.7036
+Calmar: 0.3070
+Avg Daily Return: 0.0003
+Daily Vol: 0.0057
+Avg gross exposure %: 60.75321331570647
+Max gross exposure %: 100.0
+CAGR ser låg ut men givet att det är utan leverage, average exposure på 60%, att vi backtestar med kostnader och att strategin endast ska vara del av en större portfölj, är CAGR på 6.76% acceptabelt. 22% maximum drawdown är acceptabelt och det kommer troligen gå ner vid
+viktoptimeringen. Sharpe kvot på 0.7 är acceptabelt för en trendföljande strategi. Calmar (CAGR/MAX DD) är ganska låg, men kommer troligen också förbättras i viktoptimeringen. Nu går vi vidare till viktoptimering och allokering. Vi börjar med ERC (equal risk contribution)
+där procentsatsen vi får ska spegla att varje marknad ska bidra med lika mycket volatilitet till portföljen:
+ERC weights (based on daily close returns)
+US500: 0.3417
+USTEC: 0.2887
+US30: 0.3695
+Precis som förväntat, US30 har stabilare utveckling, och lägre volatilitet så den får högst vikt. Nasdaq hade sämst resultat och högst volatilitet, lägre vikt. Med dessa vikter får vi:
+Equity Start: 50000.0000
+Equity End: 124711.1807
+CAGR: 0.0678
+Max Drawdown %: -21.7607
+Sharpe (ann.): 0.7141
+Calmar: 0.3118
+Avg Daily Return: 0.0003
+Daily Vol: 0.0056
+Sanity: Open positions at end: 0
+Avg gross exposure %: 60.80164378245868
+Max gross exposure %: 100.00000000000003
+En liten, liten förbättring i allt men inget märkvärdigt. Vi vill följa Robert Carver flöde när det kommer till sätta vikter. Efter fasta vikter har bestämts, genom t.ex. ERC är nästa steg att block bootstrappa varje individuell marknad (omdistribuera perioder 
+av returns) och räkna ERC vikterna för varje resample och sedan kolla på distribution av nyckelvärden.
+
+Strategy returns DF shape: (3711, 3)
+             US500        USTEC         US30
+count  3711.000000  3711.000000  3711.000000
+mean      0.000254     0.000233     0.000269
+std       0.005988     0.007675     0.005730
+min      -0.054517    -0.056443    -0.065415
+25%      -0.000698    -0.000757    -0.000497
+50%       0.000000     0.000000     0.000000
+75%       0.001792     0.002160     0.001708
+max       0.065578     0.049041     0.054900
+
+--- BOOTSTRAP DISTRIBUTIONS (ERC each resample) ---
+Sharpe {'mean': 0.7077000322106456, 'median': 0.7083506778979627, 'p05': 0.29973451371270077, 'p95': 1.1167342576361607}
+CAGR {'mean': 0.06731648016734973, 'median': 0.0665974154820912, 'p05': 0.02490300218265669, 'p95': 0.1110347624883985}
+MaxDD {'mean': -0.18713765051420997, 'median': -0.17738742672128827, 'p05': -0.28999739705520416, 'p95': -0.11797580042053148}
+Calmar {'mean': 0.41035519957835287, 'median': 0.3760403519940497, 'p05': 0.09624932950252932, 'p95': 0.8472767853622808}
+EndEquity {'mean': 2.552127751241865, 'median': 2.4005011434414016, 'p05': 1.3909054533414342, 'p95': 4.17595245384358}
+
+--- WEIGHT DISTRIBUTIONS ---
+US500 {'mean': 0.33574873551779455, 'median': 0.3356926730394598, 'p05': 0.32884221273659225, 'p95': 0.34283718671765456}
+USTEC {'mean': 0.2840305334235457, 'median': 0.2840813776715527, 'p05': 0.27151531011353985, 'p95': 0.29654886975890127}
+US30 {'mean': 0.38022073105865983, 'median': 0.38003762307191613, 'p05': 0.36761813892260625, 'p95': 0.3939099543566073}
+Alla marknader har positiv edge, Nasdaq har högst volatilitet och Dow Jones har lägst. I den femte percentilen av sämst sharpe hamnar värdet fortfarande på 0.3 och i femte percentilen av sämst CAGR hamnar värdet på 2.49%, vilket betyder att i värsta utfall tjänar
+systemet fortfarande pengar. Värsta drawdown scenariot hamnar på -29% vilket är högt men betdyer inte att strategin inte är tradeable. I viktfördelning för de olika percentilerna hamnar ERC vikterna i varsitt stabilt område, (US500: p05–p95 ≈ 0.329 – 0.343),
+(USTEC: p05–p95 ≈ 0.272 – 0.297), (US30: p05–p95 ≈ 0.368 – 0.394). Ingen marknaden får ovanligt hög eller låg vikt som sviktar iväg från medelvärdet vilket är väldigt positivt. Nu är nästa steg att skala portföljen exponering så att våran expected volatility hamnar
+runt ett visst mål. Detta kallas vol-targeting. Carvers matematiska synsätt säger Expected return ≈ Sharpe x Volatility. Eftersom vi har en stabil distribution av sharpe i bootstrappingen innebär det att vi kan höja eller sänka volatiliteten utefter vårat mål. Våran
+CAGR hamnade på 0.67% så vi kan anta att nuvarande realiserad vol är runt 6%. Om vi istället sätter 9% som mål och skalar exponeringen: scale = 9/6 = 1.5. Så blir ny CAGR = 6.7% x 1.5 = 10%, ny MAX DD (median) = 18% x 1.5 = 27%. Vilket matchar sämsta 5e percentilen = 29%,
+som vi redan bevisat att systemet klarar historiskt. Eftersom average exposure hamnar runt 60% har vi kapital som inte används, vilket vol-targeting kan uppfylla kontrollerat. Upp till nu har vi använt en target_groos_exposure = 1.0 vilket innebär att vi använder upp till
+100% av kaptialet, nu gör vi istället som så att vi mäter realiserad vol för en viss period (ex. 60-dagars), bestämer target-vol (ex. 10%), då blir exposure scale = target vol/realized vol samtidigt som vi begränsar med caps (exempelvis max exposure = 1.5x, 
+min exposure = 0.3x). Vi siktar på 10% vol om året och räknar realiserad vol över en rullande period av 60 dagar:
+--- ERC weights (based on daily close returns) ---
+US500: 0.3417
+USTEC: 0.2887
+US30: 0.3695
+
+Strategy returns DF shape: (3711, 3)
+             US500        USTEC         US30
+count  3711.000000  3711.000000  3711.000000
+mean      0.000254     0.000233     0.000269
+std       0.005988     0.007675     0.005730
+min      -0.054517    -0.056443    -0.065415
+25%      -0.000698    -0.000757    -0.000497
+50%       0.000000     0.000000     0.000000
+75%       0.001792     0.002160     0.001708
+max       0.065578     0.049041     0.054900
+
+--- BOOTSTRAP DISTRIBUTIONS (ERC each resample) ---
+Sharpe {'mean': 0.7077000322106456, 'median': 0.7083506778979627, 'p05': 0.29973451371270077, 'p95': 1.1167342576361607}
+CAGR {'mean': 0.06731648016734973, 'median': 0.0665974154820912, 'p05': 0.02490300218265669, 'p95': 0.1110347624883985}
+MaxDD {'mean': -0.18713765051420997, 'median': -0.17738742672128827, 'p05': -0.28999739705520416, 'p95': -0.11797580042053148}
+Calmar {'mean': 0.41035519957835287, 'median': 0.3760403519940497, 'p05': 0.09624932950252932, 'p95': 0.8472767853622808}
+EndEquity {'mean': 2.552127751241865, 'median': 2.4005011434414016, 'p05': 1.3909054533414342, 'p95': 4.17595245384358}
+
+--- WEIGHT DISTRIBUTIONS ---
+US500 {'mean': 0.33574873551779455, 'median': 0.3356926730394598, 'p05': 0.32884221273659225, 'p95': 0.34283718671765456}
+USTEC {'mean': 0.2840305334235457, 'median': 0.2840813776715527, 'p05': 0.27151531011353985, 'p95': 0.29654886975890127}
+US30 {'mean': 0.38022073105865983, 'median': 0.38003762307191613, 'p05': 0.36761813892260625, 'p95': 0.3939099543566073}
+
+[Portfolio] Using weights:
+  US30: 0.3695
+  US500: 0.3417
+  USTEC: 0.2887
+
+--- PORTFÖLJ METRICS (CASH, MTM, ERC WEIGHTS) ---
+Equity Start: 50000.0000
+Equity End: 126396.8247
+CAGR: 0.0689
+Max Drawdown %: -18.2739
+Sharpe (ann.): 0.7490
+Calmar: 0.3769
+Avg Daily Return: 0.0003
+Daily Vol: 0.0054
+
+Sanity: Open positions at end: 0
+Avg gross exposure %: 61.59498023971117
+Max gross exposure %: 100.0
+Scale median: 1.3035886909713927
+Scale p05: 0.7682389702681807
+Scale p95: 1.8813838534750935
+
