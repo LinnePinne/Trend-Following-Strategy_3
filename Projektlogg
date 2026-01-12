@@ -441,7 +441,7 @@ US30 {'mean': 0.38022073105865983, 'median': 0.38003762307191613, 'p05': 0.36761
   US500: 0.3417
   USTEC: 0.2887
 
---- PORTFÖLJ METRICS (CASH, MTM, ERC WEIGHTS) ---
+--- PORTFÖLJ METRICS (CASH, MTM, ERC WEIGHTS + Vol Targeting) ---
 Equity Start: 50000.0000
 Equity End: 126396.8247
 CAGR: 0.0689
@@ -457,4 +457,24 @@ Max gross exposure %: 100.0
 Scale median: 1.3035886909713927
 Scale p05: 0.7682389702681807
 Scale p95: 1.8813838534750935
+Portföljresultat förbättras, Equtiy ENN från 124k till 126k, CAGR från 0.678 till 0.689, max DD från -22% till -18.3%, sharpe från 0.71 till 0.75, daily vol från 0.56 till 0.54. Det är exakt sånna här små förbättringar vi vill se i portfölj optimering, CAGR ökar lite
+eftersom vi skalar upp risken i perioder av lägre vol samtidigt som volatiliteten faller eftersom vi kapar topparna. Median scale och scale p95 vill vara över 1, men eftersom vi har max_gross_exposure kapas scale till att aldrig gå över 100%, detta är också varför CAGR
+inte går upp mer. Om Vi höjer max och target exposure till 1.25 får vi:
+Equity Start: 50000.0000
+Equity End: 137011.0453
+CAGR: 0.0751
+Max Drawdown %: -20.0963
+Sharpe (ann.): 0.7718
+Calmar: 0.3736
+Avg Daily Return: 0.0003
+Daily Vol: 0.0057
 
+Sanity: Open positions at end: 0
+Avg gross exposure %: 63.94830393277765
+Max gross exposure %: 100.00000000000003
+Scale median: 1.2559000192708025
+Scale p05: 0.7018700208738742
+Scale p95: 1.814988891319536
+CAGR går från 0.0689 till 0.075, sharpe från 0.75 till 0.77, max dd från -18.3% till -20.1% (fortfarande kontrollerbart). Strategin får sällan samtidiga signalar i alla marknader och vol-targeting vill ofta skala upp (median scale = 1.26) men eftersom det inte alltid 
+finns tillräckligt många öppna positioner får vi sällan 125% gross exposure vilket också innebär att 1.25 är ganska konservativt. Under normallugna perioder vill alltså systemet ta runt 25% mer risk, i stressperioder med mycket vol vill den dra ner risken till 70% av 
+basrisken och i lågvol-regimer vill den ibland dra upp risk till 80% över basen.
