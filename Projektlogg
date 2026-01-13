@@ -477,4 +477,19 @@ Scale p05: 0.7018700208738742
 Scale p95: 1.814988891319536
 CAGR går från 0.0689 till 0.075, sharpe från 0.75 till 0.77, max dd från -18.3% till -20.1% (fortfarande kontrollerbart). Strategin får sällan samtidiga signalar i alla marknader och vol-targeting vill ofta skala upp (median scale = 1.26) men eftersom det inte alltid 
 finns tillräckligt många öppna positioner får vi sällan 125% gross exposure vilket också innebär att 1.25 är ganska konservativt. Under normallugna perioder vill alltså systemet ta runt 25% mer risk, i stressperioder med mycket vol vill den dra ner risken till 70% av 
-basrisken och i lågvol-regimer vill den ibland dra upp risk till 80% över basen.
+basrisken och i lågvol-regimer vill den ibland dra upp risk till 80% över basen. Vi väljer 1.25, vi vill inte gå högre om vi ska köra strategin på funded konton. Funded konton har max daily losses som regel, där högsta acceptabla förlusten intraday är t.ex. -5%.
+Därför tar vi reda på det nu, vi kollar både på daily close losses och intraday(peak-to-trough):
+Max daily loss ($), close-to-close: -4556.01617468051
+Max daily loss (%), close-to-close: -4.331389389405215
+Max intraday daily loss ($): -5240.533186357206
+Max intraday daily loss (%): -4.811577172698112
+Worst intraday DD day: 2022-09-13
+Worst intraday DD (%): -4.811577172698112
+FTMOs max daily loss ligger på -5% så det är väldigt tajt här. Ifall vi får en sämre dag än sämsta dagen i backtesten (vilket vi alltid vill förvänta oss) så bryts den regeln. Därför vill vi lägga in en daily intraday stop loss på 3.75% där inga nya postioner öppnas
+om den gränsen nås intraday, men eftersom strategin ska kombineras med en till strategi så kollar vi på det i analysen av de två strategierna som portfölj. Nu är denna strategin i princip klar. Vi började med en enkel backtest på trendlogik, EMA crossover och optimerade
+de till EMA_fast(70) och EMA_slow(120). Därefter kolla vi på optimeringsfilter och kom fram till att en adx tröskel på 15 gjorde strategin mer robust. Sedan giock vi över till out of sample test, då vi fick fram att strategin fungerar över SP500, Nasdaq 100, Dow Jones,
+under hela perioden 2012 - 2025. Strategin klarar svåra regimer även om 2022 var extremt smärtsam. Sedan var det dags för vikt optimering och risk allokering, vi använde oss av equal risk contribution (ERC) och block bootstrapping för att validera vikterna US500: 0.3417,
+USTEC: 0.2887, US30: 0.3695. Nästa steg var vol-targeting där vi siktatde på 10% årlig volatilitet och gick framåt med 1.25 max gross exposure, 1.25 target gross exposure. Max drawdown och sharpe förbättrades av både viktoptimeringen och vol-targeting. Vi kollade sist
+på worst intraday drawdown och mötte precis kravet vilket betyder att en daily intraday stop loss eller liknande kommer behövas, detta kommer vara mer passande att kolla på i samband med mean reversion strategin. Så den färdiga trendföljande strategin som vi nu byggt 
+ser ut såhär: Long only när EMA_fast(70) krossar EMA_slow(120) och ADX är över 15. Vikterna per marknad är 34% till sp500, 29% till nasdaq100 och 37% till dow jones. Target exposure på 1.25, alltså 125% av kapitalet. Nu är nästa steg att bygga en portföljintegration 
+med trendföljande systemet och mean reversion systemet. Detta görs i US equities strategy portfolio.
