@@ -1,0 +1,77 @@
+ChatGPTs analys:
+Sammanfattning: processen är bättre än många retail-backtests: ni har gått från enkel hypotes → parametrisk robusthet → OOS-test → flera marknader → portfölj → ERC → bootstrap → vol-targeting → daily-loss-kontroll. Det är rätt riktning. Men den är inte färdigvaliderad nog för kapital utan några viktiga korrigeringar.
+Största styrkor
+Ni undviker flera klassiska fel:
+Entry/exit fylls på nästa bar open, inte på samma bars close, vilket minskar look-ahead-risk. Signalen beräknas på row, medan fyll sker på next_row["open"] med spread/slippage. Det är bra.
+Ni har transaktionskostnader: spread, slippage och kommission. Det är positivt, även om kostnadsmodellen bör stressas mer.
+Ni har inte bara optimerat en marknad, utan testat US500, USTEC och US30, och byggt portfölj-MTM med cash/equity/gross exposure.
+Ni har gjort bootstrap på dagliga strategi-returns och granskat distributionsutfall, där p05 Sharpe låg runt 0.30 och p05 CAGR runt 2.49%. Det är ett bra steg mot robusthetstänk.
+
+Största riskerna
+1. Parametrarna är sannolikt delvis överoptimerade
+Ni testade EMA 75/125, 85/135, 80/130, 70/120, 65/115, 60/110 och valde 70/120 eftersom det var sweet spot. Sedan ADX 10/15/20/25 och valde 15 eftersom det var bäst. Sedan exit-confirm 5/7/10/12 och valde 10 eftersom det var bäst. Det är inte extrem curve fitting, men det är klassisk mild overfitting: flera sekventiella val på samma historik.
+Min bedömning: strategiidén verkar robust, men de exakta parametrarna bör behandlas som osäkra, inte “sanna”.
+Åtgärd: kör walk-forward:
+2012–2016 optimering → 2017–2019 test
+2014–2018 optimering → 2019–2021 test
+2016–2020 optimering → 2021–2023 test
+2018–2022 optimering → 2023–2025 test
+Godkänn bara om flera parameterkluster fungerar, inte bara 70/120/ADX15/exit10.
+
+2. OOS-testet är svagt, men ni fortsätter ändå
+Projektloggen säger att SP500 OOS 2021–2025 fick Sharpe 0.55, PF 1.17 och mycket hög drawdown, och att detta “inte hade varit accepterat som enskild strategi”. Det är en viktig varningssignal.
+Att strategin sedan ser bättre ut 2012–2025 kan vara legitimt, men det blandar tillbaka OOS-perioden in i helheten. Det gör att den verkliga OOS-signalen försvagas.
+Åtgärd: lås strategin efter IS-perioden och rapportera alltid separat:
+IS
+OOS
+full period endast som sekundär information
+
+3. ERC-vikterna använder hela historiken
+I koden beräknas ERC-vikter från build_daily_close_returns(market_dfs) över hela datasetet innan portföljen körs. Det innebär att vikterna använder framtida volatilitet/korrelation relativt tidiga år. Det är en form av look-ahead bias i portföljvikterna.
+Det är inte signal-lookahead, men det är allocation-lookahead.
+Åtgärd: gör ERC-vikter rullande, exempelvis 252 eller 756 handelsdagar, och använd endast data fram till föregående dag.
+
+4. Vol-targeting verkar korrektare än ERC, men behöver granskas
+Vol-targetingen uppdateras dagligen baserat på tidigare equity-returns, vilket principiellt är rätt. Den använder historiska daily returns, inte framtiden.
+Men eftersom ERC-vikterna är statiska och beräknade på hela perioden påverkas även vol-targetade resultat av framtidsinformation via vikterna.
+
+5. Bootstrap-resultaten kan vara för optimistiska
+Ni bootstrappar strategi-returns, men skapar ERC-vikt för varje resample och mäter samma resample. Det testar stabilitet, men det är inte ett rent out-of-sample-test.
+Dessutom bevarar block bootstrap viss serial correlation, men den fångar inte regimskiften perfekt, särskilt inte sekvenser som 2022-bear market.
+Åtgärd: gör även “regime bootstrap”:
+resampla hela månader/kvartal
+stressa med 2022 två gånger
+ta bort bästa 5–10 trades
+dubbla spread/slippage
+kör start-date sensitivity
+
+6. Daily-loss-regeln är för tight
+Worst intraday daily DD är -4.81%, nära FTMO-liknande -5%-gräns. Projektloggen drar korrekt slutsats att detta är för nära gränsen.
+Min professionella bedömning: en historisk maxförlust på -4.81% mot en regelgräns på -5% är inte acceptabel säkerhetsmarginal. Live-slippage, spread expansion, datafel, latency eller gap kan bryta regeln.
+Åtgärd: dimensionera så att historisk worst intraday day är max cirka -2.5% till -3.0%, inte -4.8%.
+Möjliga kodproblem / realismproblem
+Det finns en viktig motsägelse: MAX_GROSS_EXPOSURE = 1.25, men koden begränsar position_notional med cash, vilket i praktiken hindrar verklig hävstång om inte cash finns.
+Det betyder att 125% gross exposure kanske inte faktiskt kan uppnås som tänkt. Ni säger också i loggen att max gross exposure ofta blir 100%, vilket matchar detta.
+Val: antingen:
+gör strategin cash-only och kalla den inte 1.25x levered, eller
+implementera margin/leverage korrekt utan position_notional = min(position_notional, cash).
+Min dom
+
+Strategin har troligen en äkta trendföljande komponent, men den nuvarande performance-siffran ska ses som optimistisk på grund av:
+sekventiell parameteroptimering,
+svag OOS-period,
+ERC-vikter beräknade på hela historiken,
+bootstrap som inte är riktig OOS,
+för liten marginal mot daily-loss-regler,
+oklar leverage/cash-logik.
+
+Jag hade inte kastat strategin. Jag hade klassat den som lovande men ej produktionsklar.
+
+Prioriterad nästa checklista
+Bygg rullande ERC utan framtidsdata.
+Kör walk-forward på EMA/ADX/exit-confirm.
+Rapportera IS/OOS separat.
+Stressa kostnader: 2x, 3x spread/slippage.
+Testa utan bästa 5 trades per marknad.
+Sänk risk tills daily max loss har minst 40–50% säkerhetsmarginal.
+Bestäm om modellen är cash-only eller levered och justera kod därefter.
