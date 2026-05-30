@@ -75,3 +75,223 @@ Stressa kostnader: 2x, 3x spread/slippage.
 Testa utan bästa 5 trades per marknad.
 Sänk risk tills daily max loss har minst 40–50% säkerhetsmarginal.
 Bestäm om modellen är cash-only eller levered och justera kod därefter.
+
+Vi lägger upp arbetet i olika faser såhär:
+Fas 1 — Backtest-integritet
+Mål: säkerställa att resultaten inte är tekniskt felaktiga.
+Kontrollera:
+ingen look-ahead i signaler, exits, indicators
+korrekt next-bar execution
+korrekt cash/position/PnL-logik
+ingen survivorship bias i data
+korrekt hantering av spread, slippage, gaps och öppningspriser
+Output: “Backtest audit report” med buggar, fixes och ny baseline.
+
+Fas 2 — Parameterrobusthet
+Mål: se om strategin fungerar som idé, inte bara med valda parametrar.
+Testa grids runt:
+EMA fast/slow
+ADX threshold
+exit confirmation bars
+eventuellt ADX off/on
+Men utvärdera som heatmaps/kluster, inte “bästa värdet”.
+Bra tecken: breda områden fungerar.
+Dåligt tecken: bara 70/120/15/10 fungerar.
+
+Fas 3 — Walk-forward validation
+Mål: ersätta enkel OOS med riktig process.
+
+Exempel:
+optimera 2012–2016 → testa 2017–2019
+optimera 2014–2018 → testa 2019–2021
+optimera 2016–2020 → testa 2021–2023
+optimera 2018–2022 → testa 2023–2025
+Output:
+OOS Sharpe
+OOS CAGR
+OOS max DD
+parameterstabilitet
+hur ofta strategin väljer liknande parameterzoner
+
+Fas 4 — Regimanalys
+Mål: förstå när strategin tjänar/förlorar.
+Bryt ner resultat efter:
+år
+bull/bear market
+volatilitet hög/låg
+ADX hög/låg
+trendstyrka
+inflation/rate shock-perioder
+VIX-regimer om data finns
+Fråga: är strategin bara en bull-market beta-strategi, eller fångar den faktisk trend?
+
+Fas 5 — Stress- och känslighetstester
+Mål: se om edge överlever dåliga antaganden.
+Testa:
+2x och 3x spread/slippage
+ta bort bästa 5, 10 och 20 trades
+startdatum-sensitivity
+random trade skip, t.ex. missa 10–20% av entries
+delayed execution: entry en bar senare
+gap stress på exits
+block bootstrap med månader/kvartal, inte bara 20-dagarsblock
+
+Fas 6 — Förbättringsforskning
+Mål: hitta förbättringar utan curve fitting.
+Prioritera hypoteser, inte random search:
+Regimfilter
+endast trade när index är över 200D MA
+VIX-filter
+macro-vol-filter
+breadth-filter om data finns
+Exit-förbättring
+hybrid exit: EMA recross + time stop
+emergency stop för extrema reversals
+exit baserat på trend decay snarare än fast 10 bars
+Entry-förbättring
+crossover som trend-state, entry på pullback
+breakout efter trend-state
+undvik entry efter extremt gap upp
+Volatilitetsnormalisering
+ATR-normaliserad signalstyrka
+position sizing separat från portföljnivå, men utan att bestämma slutlig viktning
+
+Vi börjar såkalrt med fas 1, vi delar in denna i olika segment:
+Fas 1A — Execution Audit
+Först granskar vi själva exekveringen.
+Checklista
+Entry
+Vi vill verifiera:
+Signal skapas på bar t
+Order fylls på open av bar t+1
+I koden ser det ut så:
+cross_up = ...
+entry_fill_price = next_row["open"]
+vilket ser korrekt ut.
+Men vi gör ett manuellt test.
+Ta 10 slumpmässiga trades. För varje trade:
+entry signal timestamp
+entry fill timestamp
+ema_fast
+ema_slow
+adx
+Kontrollera visuellt att:
+signal -> nästa bars open -> fill och inte samma bar.
+Exit samma sak. Kontrollera 10 slumpmässiga exits. Vi använder:
+exit_confirm_bars = 10
+och exit sker på nästa bars open.
+Verifiera manuellt.
+
+Fas 1B — Indicator Audit
+Här vill vi hitta look-ahead.
+EMA
+EMA ser säker ut.
+ewm(adjust=False)
+använder endast historik.
+ADX
+Här vill vi göra ett test. nTa en trade och skriv ut:
+timestamp
+adx
+för 20 bars före signal.
+Verifiera att ADX inte använder framtida data.
+Vi tror inte den gör det, men man verifierar ändå.
+
+Fas 1C — Equity Audit
+Den viktigaste delen.
+Ta en enda trade.
+Räkna manuellt:
+entry price
+exit price
+contracts
+commission
+Beräkna:
+PnL
+för hand.
+Jämför med motorns resultat.
+Sedan:
+Ta 5 trades i rad.
+Räkna:
+cash
+equity
+MTM
+för hand och jämför. Om vi hittar minsta avvikelse här måste allt pausas.
+
+Fas 1D — Position Sizing Audit
+Här finns faktiskt ett område vi misstänker.
+Vi har:
+MAX_GROSS_EXPOSURE = 1.25
+men också:
+position_notional = min(position_notional, cash)
+Det innebär att systemet kanske aldrig faktiskt använder 125% kapital.
+logga:
+desired_notional
+actual_notional
+cash
+för varje trade.
+Sedan mäter vi:
+Hur ofta ville modellen ha större position?
+Hur ofta stoppades den av cash?
+
+Fas 1E — Cost Model Audit
+Här brukar många backtests bli överoptimistiska.
+Vi använder:
+spread = 0.8
+slippage = 0.5
+commission = 0.1 RT
+Frågan är:
+Är detta realistiskt för hela perioden 2012–2025?
+För:
+US500
+USTEC
+US30
+under:
+Covid
+2022
+FOMC-dagar
+CPI-dagar
+Vi kör:
+Scenario A
+Nuvarande kostnader
+Scenario B
+2x kostnader
+Scenario C
+3x kostnader
+Om Sharpe kollapsar har vi kostnadsrisk.
+Om resultaten knappt påverkas är strategin robust.
+
+Fas 1F — Data Audit
+Väldigt viktig.
+Vi använder:
+US500
+USTEC
+US30
+Vi måste veta:
+Är detta CFD-data?
+Är detta index-data?
+Är detta kontinuerliga futures?
+Finns några luckor?
+Finns duplicerade bars?
+Finns konstiga spikes?
+Har någon leverantör ändrat historiken?
+df.describe()
+och sedan leta efter:
+hourly_return > 10%
+hourly_return < -10%
+för att hitta datakorruption.
+
+Fas 1G — Reconciliation Report
+När allt ovan är klart bygger vi ett dokument:
+Execution
+PASS / FAIL
+Indicators
+PASS / FAIL
+Costs
+PASS / FAIL
+Data
+PASS / FAIL
+Position sizing
+PASS / FAIL
+Equity accounting
+PASS / FAIL
+
+
