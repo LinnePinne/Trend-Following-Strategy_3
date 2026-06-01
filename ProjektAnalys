@@ -294,4 +294,287 @@ PASS / FAIL
 Equity accounting
 PASS / FAIL
 
+==============================
+FAS 1A — EXECUTION AUDIT
+==============================
+EMA fast/slow: 70/120
+ADX threshold: 15
+Exit confirm bars: 10
+Spread/slippage/commission RT: 0.8/0.5/0.1
 
+WARNING: US500_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US500: PASS | trades=202 | normal exits=201 | forced exits=1 | errors=0
+WARNING: USTEC_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+USTEC: PASS | trades=223 | normal exits=222 | forced exits=1 | errors=0
+WARNING: US30_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US30: PASS | trades=218 | normal exits=218 | forced exits=0 | errors=0
+
+--- SUMMARY ---
+Market  Trades  Normal exits  Forced exits  Errors Status
+ US500     202           201             1       0   PASS
+ USTEC     223           222             1       0   PASS
+  US30     218           218             0       0   PASS
+
+RESULT: PASS — no same-bar fill or execution mismatch detected.
+==============================
+FAS 1B + 1C — INDICATOR + PNL/EQUITY AUDIT
+==============================
+EMA fast/slow: 70/120
+ADX threshold: 15
+Exit confirm bars: 10
+Spread/slippage/commission RT: 0.8/0.5/0.1
+
+WARNING: US500_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US500: Indicator PASS | samples=25 | ind_errors=0 || PnL PASS | trades=202 | pnl_errors=0
+WARNING: USTEC_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+USTEC: Indicator PASS | samples=25 | ind_errors=0 || PnL PASS | trades=223 | pnl_errors=0
+WARNING: US30_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US30: Indicator PASS | samples=25 | ind_errors=0 || PnL PASS | trades=218 | pnl_errors=0
+
+--- FAS 1B SUMMARY ---
+Market  Trades  Indicator Samples Checked  Indicator Errors Status
+ US500     202                         25                 0   PASS
+ USTEC     223                         25                 0   PASS
+  US30     218                         25                 0   PASS
+
+--- FAS 1C SUMMARY ---
+Market  Trades  Errors  Total Net Points  Total Net PnL $ 1-contract  Start Equity  End Equity 1-contract  Expected End Equity Status
+ US500     202       0       2723.289005                 2723.289005       50000.0           52723.289005         52723.289005   PASS
+ USTEC     223       0       8853.826881                 8853.826881       50000.0           58853.826881         58853.826881   PASS
+  US30     218       0      24090.290999                24090.290999       50000.0           74090.290999         74090.290999   PASS
+
+RESULT: PASS — no indicator look-ahead mismatch or PnL/equity reconciliation error detected.
+==============================
+FAS 1D — POSITION SIZING AUDIT
+==============================
+START_CAPITAL: 50000
+MAX_GROSS_EXPOSURE: 1.25
+TARGET_GROSS_EXPOSURE: 1.25
+USE_VOL_TARGETING: True
+VOL TARGET: 0.1, window=60, min/max scale=0.25/2.0
+
+WARNING: US500_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US500: generated trades=202
+WARNING: USTEC_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+USTEC: generated trades=223
+WARNING: US30_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+US30: generated trades=218
+
+ERC weights used in audit:
+  US500: 0.341739
+  USTEC: 0.288718
+  US30: 0.369543
+
+--- FAS 1D SUMMARY ---
+ Total Entries  Capped Entries  Cash-Capped Entries  Gross-Capped Entries  Desired > Cash Cap Count  Desired > Gross Cap Count  Avg Actual/Desired %  Min Actual/Desired %  Avg Gross Exposure %  P95 Gross Exposure %  Max Gross Exposure %  % Time Gross > 100%  % Time Gross > 110%  % Time Gross > 120%  Errors Status                                                                                                                                                               Interpretation
+           643             295                  295                     0                       295                        205              0.703589         -1.399472e-16              0.639491                   1.0                   1.0                  0.0                  0.0                  0.0       0   PASS Cash-only behavior: actual gross exposure never meaningfully exceeded 100%. MAX/TARGET_GROSS_EXPOSURE above 1.0 is mostly theoretical unless margin/leverage is implemented.
+
+--- CAP REASON COUNTS ---
+Cap Reason
+not_capped    348
+cash_cap      295
+
+--- BY MARKET ---
+Market  Entries  Avg_Actual_Desired  Min_Actual_Desired  Avg_Notional  Cash_Capped  Gross_Capped
+  US30      218            0.686268       -8.247010e-17  30150.523554           97             0
+ US500      202            0.800852       -1.057344e-16  33129.084899           83             0
+ USTEC      223            0.632419       -1.399472e-16  22685.233036          115             0
+
+RESULT: PASS — no negative cash, no gross-exposure breach, and equity identity held.
+==============================
+FAS 1E — COST MODEL AUDIT
+==============================
+EMA fast/slow: 70/120
+ADX threshold: 15
+Exit confirm bars: 10
+Base spread/slippage/commission RT: 0.8/0.5/0.1
+
+WARNING: US500_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+WARNING: USTEC_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+WARNING: US30_1H_2012-now.csv har duplicerade timestamps. Behåller sista raden per timestamp.
+--- Scenario: 1x_base ---
+US500: trades=202 | NetPts=2723.29 | PF=1.556 | Exp=13.48
+USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | Exp=39.70
+US30: trades=218 | NetPts=24090.29 | PF=1.591 | Exp=110.51
+Portfolio EQ_END=124348.88 | CAGR=0.0676 | MaxDD=-22.03% | Sharpe=0.704
+
+--- Scenario: 2x_spread_slippage ---
+US500: trades=202 | NetPts=2359.69 | PF=1.462 | Exp=11.68
+USTEC: trades=223 | NetPts=8452.43 | PF=1.408 | Exp=37.90
+US30: trades=218 | NetPts=23697.89 | PF=1.578 | Exp=108.71
+Portfolio EQ_END=115394.34 | CAGR=0.0619 | MaxDD=-22.43% | Sharpe=0.650
+
+--- Scenario: 3x_spread_slippage ---
+US500: trades=202 | NetPts=1996.09 | PF=1.375 | Exp=9.88
+USTEC: trades=223 | NetPts=8051.03 | PF=1.384 | Exp=36.10
+US30: trades=218 | NetPts=23305.49 | PF=1.565 | Exp=106.91
+Portfolio EQ_END=107086.25 | CAGR=0.0562 | MaxDD=-22.82% | Sharpe=0.596
+
+--- Scenario: 2x_all_costs ---
+US500: trades=202 | NetPts=2339.49 | PF=1.457 | Exp=11.58
+USTEC: trades=223 | NetPts=8430.13 | PF=1.407 | Exp=37.80
+US30: trades=218 | NetPts=23676.09 | PF=1.577 | Exp=108.61
+Portfolio EQ_END=114917.13 | CAGR=0.0616 | MaxDD=-22.45% | Sharpe=0.647
+
+--- Scenario: 3x_all_costs ---
+US500: trades=202 | NetPts=1955.69 | PF=1.366 | Exp=9.68
+USTEC: trades=223 | NetPts=8006.43 | PF=1.382 | Exp=35.90
+US30: trades=218 | NetPts=23261.89 | PF=1.564 | Exp=106.71
+Portfolio EQ_END=106202.35 | CAGR=0.0556 | MaxDD=-22.87% | Sharpe=0.590
+
+--- MARKET COST COMPARISON ---
+          Scenario Market  Trades  Total Net Points  Total Net Points Retention %  Profit Factor  Expectancy Points/Trade  Trade-Level Sharpe Approx Cost Robustness Status
+           1x_base  US500     202       2723.289005                    100.000000       1.555676                13.481629                   2.059343            PASS_STRONG
+2x_spread_slippage  US500     202       2359.689005                     86.648497       1.461918                11.681629                   1.784390            PASS_STRONG
+3x_spread_slippage  US500     202       1996.089005                     73.296995       1.375135                 9.881629                   1.509437            PASS_STRONG
+      2x_all_costs  US500     202       2339.489005                     85.906747       1.456918                11.581629                   1.769115            PASS_STRONG
+      3x_all_costs  US500     202       1955.689005                     71.813495       1.365906                 9.681629                   1.478886            PASS_STRONG
+           1x_base  USTEC     223       8853.826881                    100.000000       1.432431                39.703260                   1.610935            PASS_STRONG
+2x_spread_slippage  USTEC     223       8452.426881                     95.466367       1.408117                37.903260                   1.537901            PASS_STRONG
+3x_spread_slippage  USTEC     223       8051.026881                     90.932734       1.384316                36.103260                   1.464867            PASS_STRONG
+      2x_all_costs  USTEC     223       8430.126881                     95.214499       1.406781                37.803260                   1.533844            PASS_STRONG
+      3x_all_costs  USTEC     223       8006.426881                     90.428997       1.381703                35.903260                   1.456752            PASS_STRONG
+           1x_base   US30     218      24090.290999                    100.000000       1.590854               110.505922                   2.243471            PASS_STRONG
+2x_spread_slippage   US30     218      23697.890999                     98.371128       1.577989               108.705922                   2.206927            PASS_STRONG
+3x_spread_slippage   US30     218      23305.490999                     96.742256       1.565267               106.905922                   2.170384            PASS_STRONG
+      2x_all_costs   US30     218      23676.090999                     98.280635       1.577278               108.605922                   2.204897            PASS_STRONG
+      3x_all_costs   US30     218      23261.890999                     96.561270       1.563862               106.705922                   2.166324            PASS_STRONG
+
+--- PORTFOLIO COST COMPARISON — Equal-weight cash-only, no vol targeting ---
+          Scenario    Equity End     CAGR  Max Drawdown %  Sharpe Ann  Equity End Retention %  CAGR Retention %  Sharpe Retention %
+           1x_base 124348.881852 0.067616      -22.027098    0.703568              100.000000        100.000000          100.000000
+2x_spread_slippage 115394.337479 0.061901      -22.425364    0.649636               87.956047         91.548311           92.334484
+3x_spread_slippage 107086.254572 0.056218      -22.821524    0.595659               76.781591         83.143571           84.662675
+      2x_all_costs 114917.129048 0.061585      -22.447603    0.646621               87.314197         91.080999           91.906031
+      3x_all_costs 106202.346025 0.055590      -22.865769    0.589629               75.592725         82.214047           83.805594
+
+RESULT: PASS — edge survives even severe 3x all-cost stress in all markets.
+==============================
+FAS 1F — DATA AUDIT
+==============================
+Checks: duplicates, OHLC validity, missing/irregular bars, extreme returns, suspicious candles, yearly coverage
+
+US500: REVIEW | raw=77982 | dedup=77980 | dup_rows=4 | ohlc_errors=0 | ext_ret>5%=3 | gaps>1.5h=3252 | large_gaps>96h=0
+USTEC: REVIEW | raw=77830 | dedup=77828 | dup_rows=4 | ohlc_errors=0 | ext_ret>5%=5 | gaps>1.5h=3195 | large_gaps>96h=0
+US30: REVIEW | raw=78593 | dedup=78591 | dup_rows=4 | ohlc_errors=0 | ext_ret>5%=5 | gaps>1.5h=3042 | large_gaps>96h=1
+
+--- FAS 1F SUMMARY ---
+Market                   CSV  Rows Raw  Rows After Dedup  Invalid Timestamp Rows  Rows With Missing OHLC  Duplicate Timestamp Rows  Duplicate Unique Timestamps  OHLC Error Count  Zero Range Count  Extreme Range >10% Count  Extreme Hourly Return >5% Count  Extreme Hourly Return >10% Count  Time Gaps >1.5h Count  Large Time Gaps >96h Count  Median Gap Hours  Max Gap Hours     First Timestamp      Last Timestamp Status                                                                                                                                                                                                                                                       Interpretation
+ US500 US500_1H_2012-now.csv     77982             77980                       0                       0                         4                            2                 0              8191                         0                                3                                 0                   3252                           0               1.0           86.0 2012-01-16 01:00:00 2025-10-31 21:00:00 REVIEW                                                                                 Duplicerade timestamps finns; strategin behåller sista raden, men orsaken bör granskas. Extrema hourly returns finns; verifiera om de är verkliga marknadsrörelser eller dataspikar.
+ USTEC USTEC_1H_2012-now.csv     77830             77828                       0                       0                         4                            2                 0              8605                         0                                5                                 0                   3195                           0               1.0           85.0 2012-01-19 17:00:00 2025-10-31 21:00:00 REVIEW                                                                                 Duplicerade timestamps finns; strategin behåller sista raden, men orsaken bör granskas. Extrema hourly returns finns; verifiera om de är verkliga marknadsrörelser eller dataspikar.
+  US30  US30_1H_2012-now.csv     78593             78591                       0                       0                         4                            2                 0              9190                         0                                5                                 0                   3042                           1               1.0          596.0 2012-04-04 15:00:00 2025-12-19 22:00:00 REVIEW Duplicerade timestamps finns; strategin behåller sista raden, men orsaken bör granskas. Extrema hourly returns finns; verifiera om de är verkliga marknadsrörelser eller dataspikar. Stora tidsgap finns; kontrollera om detta är helger/helgdagar eller dataluckor.
+
+RESULT: REVIEW — no hard structural failure, but duplicates/extremes/gaps need manual review before Fas 2.
+==============================
+FAS 1F.1 — FORENSIC DATA REVIEW
+==============================
+Extreme return threshold: 5.0%
+Large gap threshold: 96 hours
+Context bars: +/- 6
+
+US500: duplicates=4 | extreme_ret>5%=3 | large_gaps>96h=0 | max_gap=86.0h | largest_abs_ret=6.71%
+USTEC: duplicates=4 | extreme_ret>5%=5 | large_gaps>96h=0 | max_gap=85.0h | largest_abs_ret=7.70%
+US30: duplicates=4 | extreme_ret>5%=5 | large_gaps>96h=1 | max_gap=596.0h | largest_abs_ret=5.88%
+
+--- SUMMARY ---
+Market                   CSV  Rows Raw  Rows After Dedup  Duplicate Rows  Duplicate Unique Timestamps  Extreme Returns >5%  Extreme Returns >10%  Largest Abs Hourly Return %  Gaps >1.5h  Large Gaps >96h  Max Gap Hours     First Timestamp      Last Timestamp Status
+ US500 US500_1H_2012-now.csv     77982             77980               4                            2                    3                     0                     6.712444        3252                0           86.0 2012-01-16 01:00:00 2025-10-31 21:00:00 REVIEW
+ USTEC USTEC_1H_2012-now.csv     77830             77828               4                            2                    5                     0                     7.700284        3195                0           85.0 2012-01-19 17:00:00 2025-10-31 21:00:00 REVIEW
+  US30  US30_1H_2012-now.csv     78593             78591               4                            2                    5                     0                     5.883019        3042                1          596.0 2012-04-04 15:00:00 2025-12-19 22:00:00 REVIEW
+
+RESULT: REVIEW — classify exported events manually as real market / holiday / bad data.
+Nu kan vi gå över till fas 2. Fas 1 handlade bara om att verifiera att motorn och datan var korrekt, i fas 2 börjar vi faktiskt
+testa om edge är verklig. Vi försöker här bevisa att edge ligger i ett område och inte bara en lyckoträff av parameter variation.
+Vi lägger upp fasen såhär:
+Fas 2A — Parameter Surface (Heatmap)
+Mål:
+Visa att 70/120 + ADX15 + exit10 inte bara är en lyckoträff.
+Testa EMA_fast:
+50–90
+steg 5
+och EMA_slow:
+90–160
+steg 5
+regel:
+slow > fast + 20
+ADX
+5–30
+steg 5
+Exit confirm
+1–15
+Per kombination mäter vi:
+CAGR
+Sharpe
+MaxDD
+Calmar
+PF
+Trades
+Vi ska inte välj bästa utan vi ska istället bygga robustness score. Exempel:
+score =
+0.4×Sharpe_rank
++
+0.3×Calmar_rank
++
+0.3×CAGR_rank
+Godkänt om:
+bred plateau
+inga isolerade toppar
+Underkänt om exempelvis:
+70/120 = Sharpe 1.2
+75/125 = Sharpe 0.2
+
+Fas 2B — Stability Around Final Parameters
+Nu zoomar vi in kring:
+EMA:
+70/120
+ADX:
+15
+Exit:
+10
+Testa:
+EMA ±10
+ADX ±5
+EXIT ±3
+och bygger degradation table, exempel:
+Config	Sharpe
+70/120/15/10	1.00
+75/125/15/10	0.97
+65/115/15/10	0.94
+Godkänt:
+95–105% retention.
+
+Fas 2C — Walk Forward
+Nu gör vi riktig validering.
+Exempel:
+Train:
+2012–2018
+Test:
+2019–2021
+Train:
+2014–2020
+Test:
+2021–2023
+Train:
+2016–2022
+Test:
+2023–2025
+För varje:
+Hitta bästa parametrar på train, kör utan ändringar på test och logga:
+parameter
+Sharpe
+CAGR
+DD
+
+Godkänt:
+parameterkluster återkommer.
+
+Fas 2D — Stability Under Stress
+Nu tar vi vinnarna.
+Testa:
+2× spread
+3× spread
+slumpmässigt missa 10% trades
+1 bar delay
+ta bort bästa 5 trades
+Godkänt:
+fortfarande positiv expectancy.
