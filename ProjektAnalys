@@ -483,6 +483,7 @@ Market                   CSV  Rows Raw  Rows After Dedup  Duplicate Rows  Duplic
   US30  US30_1H_2012-now.csv     78593             78591               4                            2                    5                     0                     5.883019        3042                1          596.0 2012-04-04 15:00:00 2025-12-19 22:00:00 REVIEW
 
 RESULT: REVIEW — classify exported events manually as real market / holiday / bad data.
+Gaps i US 500 och USTEC är troligtvis bankhelgdagar vid julafton/nyår eller liknande
 Nu kan vi gå över till fas 2. Fas 1 handlade bara om att verifiera att motorn och datan var korrekt, i fas 2 börjar vi faktiskt
 testa om edge är verklig. Vi försöker här bevisa att edge ligger i ett område och inte bara en lyckoträff av parameter variation.
 Vi lägger upp fasen såhär:
