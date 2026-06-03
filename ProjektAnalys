@@ -565,7 +565,6 @@ parameter
 Sharpe
 CAGR
 DD
-
 Godkänt:
 parameterkluster återkommer.
 
@@ -579,3 +578,64 @@ slumpmässigt missa 10% trades
 ta bort bästa 5 trades
 Godkänt:
 fortfarande positiv expectancy.
+==============================
+FAS 2A — PARAMETER SURFACE
+==============================
+Base config: EMA 70/120, ADX 15, exit 10
+EMA fast values: [50, 55, 60, 65, 70, 75, 80, 85, 90]
+EMA slow values: [90, 95, 100, 105, 110, 115, 120, 125, 130, 135, 140, 145, 150, 155, 160], min slow-fast gap: 20
+ADX values: [5, 10, 15, 20, 25, 30]
+Exit values: [1, 3, 5, 7, 10, 12, 15]
+FULL_4D_GRID: False
+
+Running EMA surface: 125 parameter combos x 3 markets
+  EMA_SURFACE_FIXED_ADX_EXIT: 100/375 market-configs done | elapsed 914.7s
+  EMA_SURFACE_FIXED_ADX_EXIT: 200/375 market-configs done | elapsed 1797.6s
+  EMA_SURFACE_FIXED_ADX_EXIT: 300/375 market-configs done | elapsed 2677.6s
+  EMA_SURFACE_FIXED_ADX_EXIT: 375/375 market-configs done | elapsed 3336.9s
+
+Running ADX/Exit surface: 42 parameter combos x 3 markets
+  ADX_EXIT_SURFACE_FIXED_EMA: 100/126 market-configs done | elapsed 878.9s
+  ADX_EXIT_SURFACE_FIXED_EMA: 126/126 market-configs done | elapsed 1119.3s
+
+Running final config benchmark
+  FINAL_CONFIG: 3/3 market-configs done | elapsed 29.1s
+
+--- FINAL CONFIG MARKET RESULTS ---
+Market  Trades  Total Net Points  Profit Factor  Expectancy  Trade Sharpe Approx  Max DD Points  PnL/MaxDD
+ US500     202       2723.289005       1.555676   13.481629             2.059343      -1109.356   2.454838
+ USTEC     223       8853.826881       1.432431   39.703260             1.610935      -4199.194   2.108459
+  US30     218      24090.290999       1.590854  110.505922             2.243471      -6852.210   3.515697
+
+--- TOP 20 ROBUST PARAMETER REGIONS (do not treat as auto-optimization) ---
+                   Surface  EMA Fast  EMA Slow  ADX Threshold  Exit Confirm Bars  Total_Trades  Mean_PF   Min_PF  Mean_Expectancy  Mean_TradeSharpe  Positive_Markets  Robustness Score Robustness Status
+EMA_SURFACE_FIXED_ADX_EXIT        90       140             15                 10           518 1.753269 1.637956        79.117173          2.348362                 3          0.910000       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        90       160             15                 10           478 1.766235 1.635837        76.270443          2.324743                 3          0.905600       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        90       155             15                 10           488 1.751775 1.726101        79.441936          2.305773                 3          0.905600       PASS_REGION
+ADX_EXIT_SURFACE_FIXED_EMA        70       120             20                 12           518 1.751866 1.565818        76.898004          2.289998                 3          0.902976       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        85       125             15                 10           570 1.711227 1.614991        73.829568          2.355164                 3          0.891200       PASS_REGION
+ADX_EXIT_SURFACE_FIXED_EMA        70       120             20                 10           521 1.741006 1.577515        74.029793          2.274081                 3          0.889881       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        85       155             15                 10           499 1.776343 1.671500        79.045251          2.342468                 3          0.883200       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        90       150             15                 10           494 1.749200 1.616503        79.622408          2.284516                 3          0.881600       PASS_REGION
+ADX_EXIT_SURFACE_FIXED_EMA        70       120             20                  7           531 1.724105 1.528677        70.471030          2.268094                 3          0.852976       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        75       140             15                 10           561 1.700718 1.650767        71.691112          2.314677                 3          0.850000       PASS_REGION
+ADX_EXIT_SURFACE_FIXED_EMA        70       120             25                 12           415 1.769421 1.563618        80.743050          2.055256                 3          0.842262       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        85       160             15                 10           490 1.709943 1.653466        76.107634          2.213015                 3          0.841200       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        90       145             15                 10           507 1.730742 1.592024        76.486845          2.257499                 3          0.837600       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        80       160             15                 10           507 1.729216 1.609761        74.246637          2.270026                 3          0.834000       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        75       135             15                 10           573 1.697757 1.591409        72.714292          2.309073                 3          0.831600       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        85       150             15                 10           518 1.709809 1.537051        76.209633          2.223443                 3          0.828800       PASS_REGION
+ADX_EXIT_SURFACE_FIXED_EMA        70       120             25                 10           415 1.756711 1.554750        78.821282          2.028688                 3          0.822024       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        75       150             15                 10           533 1.678962 1.540688        74.462312          2.190942                 3          0.817600       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        80       130             15                 10           569 1.690679 1.618103        70.991116          2.304034                 3          0.815200       PASS_REGION
+EMA_SURFACE_FIXED_ADX_EXIT        85       145             15                 10           520 1.672798 1.522268        75.080221          2.167144                 3          0.810800       PASS_REGION
+
+--- SUMMARY ---
+EMA surface configs tested: 125
+ADX/Exit surface configs tested: 42
+PASS_REGION configs: 167 / 167
+
+RESULT: REVIEW — inspect heatmaps/regions. PASS only if performance forms broad plateaus, not isolated spikes.
+Absolut ingen stark indikation på överfitting här. Det finns en tydlig plateua och våran tidigare slutkonfiguration 70 / 120 / 15 / 10
+är inte den bästa, utan toppen verkar ligga runt 85 / 150 / 20 / 10. Detta betyder inte att vi ska byta utan det är ett bra tecken för
+att vi inte överfittat och att själva strategiidén faktiskt fungerar. Nu fas 2B - Lokal stabilitet.
