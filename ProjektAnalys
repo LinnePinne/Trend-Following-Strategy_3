@@ -639,3 +639,67 @@ RESULT: REVIEW — inspect heatmaps/regions. PASS only if performance forms broa
 Absolut ingen stark indikation på överfitting här. Det finns en tydlig plateua och våran tidigare slutkonfiguration 70 / 120 / 15 / 10
 är inte den bästa, utan toppen verkar ligga runt 85 / 150 / 20 / 10. Detta betyder inte att vi ska byta utan det är ett bra tecken för
 att vi inte överfittat och att själva strategiidén faktiskt fungerar. Nu fas 2B - Lokal stabilitet.
+==============================
+FAS 2B — LOCAL PARAMETER STABILITY
+==============================
+Baseline: EMA 70/120, ADX 15, exit 10
+Local EMA fast values: [60, 65, 70, 75, 80]
+Local EMA slow values: [110, 115, 120, 125, 130]
+Local ADX values: [10, 15, 20]
+Local exit values: [7, 8, 9, 10, 11, 12]
+FULL_LOCAL_4D_GRID: False
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running local stability tests: 63 configs x 3 markets
+  done 50/189 market-configs | elapsed 373.0s
+  done 100/189 market-configs | elapsed 745.4s
+  done 150/189 market-configs | elapsed 1136.7s
+  done 189/189 market-configs | elapsed 1441.1s
+
+--- BASELINE AGGREGATE ---
+Total_Trades              643
+Mean_PF               1.52632
+Min_PF               1.432431
+Mean_Expectancy     54.563603
+Mean_TradeSharpe      1.97125
+Positive_Markets            3
+
+--- PASS/FAIL SUMMARY ---
+ Configs Tested  PASS_LOCAL Count  PASS_LOCAL Rate  Baseline Mean PF  Baseline Mean TradeSharpe  Baseline Mean Expectancy  Worst Retention Composite  Median Retention Composite  Mean Retention Composite  Best Retention Composite Status                                     Interpretation
+             63                63              1.0           1.52632                    1.97125                 54.563603                   0.888835                         1.0                  1.011962                  1.166502   PASS Local parameter neighborhood looks broadly stable.
+
+--- WORST 10 LOCAL CONFIGS BY RETENTION COMPOSITE ---
+             Test Type  EMA Fast  EMA Slow  ADX Threshold  Exit Confirm Bars  Total_Trades  Positive_Markets  Mean_NetPoints_Retention  Min_NetPoints_Retention  Mean_TradeSharpe_Retention  Retention Composite Local Stability Status
+LOCAL_ADX_EXIT_SURFACE        70       120             10                  7           719                 3                  0.894401                 0.831897                    0.885686             0.888835             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             10                  8           715                 3                  0.931982                 0.788680                    0.918896             0.920400             PASS_LOCAL
+     LOCAL_EMA_SURFACE        60       110             15                 10           701                 3                  0.926034                 0.889298                    0.947873             0.930899             PASS_LOCAL
+     LOCAL_EMA_SURFACE        65       110             15                 10           685                 3                  0.924967                 0.832193                    0.950764             0.935024             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             10                 11           698                 3                  0.956316                 0.817411                    0.924313             0.937079             PASS_LOCAL
+     LOCAL_EMA_SURFACE        65       115             15                 10           669                 3                  0.940330                 0.850607                    0.958333             0.947633             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             10                  9           709                 3                  0.965514                 0.830714                    0.947708             0.948604             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             15                  7           658                 3                  0.938173                 0.885437                    0.956944             0.949250             PASS_LOCAL
+       ONE_FACTOR_EXIT        70       120             15                  7           658                 3                  0.938173                 0.885437                    0.956944             0.949250             PASS_LOCAL
+        ONE_FACTOR_ADX        70       120             10                 10           701                 3                  0.969579                 0.841433                    0.941290             0.949602             PASS_LOCAL
+
+--- BEST 10 LOCAL CONFIGS BY RETENTION COMPOSITE ---
+             Test Type  EMA Fast  EMA Slow  ADX Threshold  Exit Confirm Bars  Total_Trades  Positive_Markets  Mean_NetPoints_Retention  Min_NetPoints_Retention  Mean_TradeSharpe_Retention  Retention Composite Local Stability Status
+LOCAL_ADX_EXIT_SURFACE        70       120             20                  9           525                 3                  1.093064                 1.014530                    1.208588             1.166502             PASS_LOCAL
+     LOCAL_EMA_SURFACE        80       130             15                 10           569                 3                  1.135592                 1.065139                    1.175684             1.156875             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             20                 12           518                 3                  1.067896                 0.989469                    1.157869             1.136608             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             20                  8           529                 3                  1.060733                 0.978563                    1.175436             1.135401             PASS_LOCAL
+     LOCAL_EMA_SURFACE        80       125             15                 10           587                 3                  1.120929                 0.954795                    1.148491             1.135030             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             20                 10           521                 3                  1.058695                 0.993245                    1.153851             1.128366             PASS_LOCAL
+        ONE_FACTOR_ADX        70       120             20                 10           521                 3                  1.058695                 0.993245                    1.153851             1.128366             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             20                 11           520                 3                  1.056124                 0.994372                    1.150191             1.125783             PASS_LOCAL
+LOCAL_ADX_EXIT_SURFACE        70       120             20                  7           531                 3                  1.029703                 0.999438                    1.146276             1.106255             PASS_LOCAL
+     LOCAL_EMA_SURFACE        75       130             15                 10           591                 3                  1.076285                 0.876995                    1.105162             1.093225             PASS_LOCAL
+
+RESULT: REVIEW — PASS if most nearby configs retain performance and heatmaps show smooth degradation, not sharp cliffs.
+Sämsta lokala avvikelsen tappade bara -11% från medianen vilket är väldigt lite. Detta är ännu mer tecken emot 
+överfitting, nu 2C.
