@@ -702,4 +702,62 @@ LOCAL_ADX_EXIT_SURFACE        70       120             20                  7    
 
 RESULT: REVIEW — PASS if most nearby configs retain performance and heatmaps show smooth degradation, not sharp cliffs.
 Sämsta lokala avvikelsen tappade bara -11% från medianen vilket är väldigt lite. Detta är ännu mer tecken emot 
-överfitting, nu 2C.
+överfitting, nu 2C som vi delar upp i två delar. Först kör vi låst parameter walk-forward med de redan låsta parametrarna 
+70 / 120 / 15 / 10, detta ska visa hur stabil strategin vi redan byggt är. I den andra delen kör vi optimerings walk-
+forward där vi optimerar på train period och låser nya parametrar och testar på nästa walk-forward period. Syftet med 
+detta är att se om denna processen live hade valt parametrar som fungerar framåt. Om optimerings walk forward är bättre 
+än baseline kan vi börja överväga att uppdatera baseline till exempelvis ADX 20, EMA80/120 eftersom fas 2A/2B talar om
+samma sak. Det viktiga är att vi inte väljer nya parametrar bara för att de presterade bättre in sample.
+==============================
+FAS 2C-1 — FIXED-PARAMETER WALK-FORWARD
+==============================
+Fixed params: EMA 70/120, ADX 15, exit 10
+No optimization is performed in this script.
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+US500: generated trades=202
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+USTEC: generated trades=223
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+US30: generated trades=218
+
+--- FULL-PERIOD MARKET BENCHMARK ---
+Market  Trades  Total Net Points  Profit Factor  Expectancy  Trade Sharpe Approx  Max DD Points  PnL/MaxDD
+ US500     202       2723.289005       1.555676   13.481629             2.059343      -1109.356   2.454838
+ USTEC     223       8853.826881       1.432431   39.703260             1.610935      -4199.194   2.108459
+  US30     218      24090.290999       1.590854  110.505922             2.243471      -6852.210   3.515697
+
+--- WF PERIOD AGGREGATE ---
+   WF Period  Total Trades  Min Trades Any Market  Positive Markets  Negative Markets  Total Net Points Sum  Mean PF   Min PF  Mean Expectancy  Mean Trade Sharpe Approx      Status
+P1_2012_2015           212                     66                 2                 1           3161.298885 1.241833 0.983840        16.003770                  0.564390 PASS_PERIOD
+P2_2016_2018            98                     29                 3                 0           6717.221000 2.219694 1.725916        63.342837                  1.475502 PASS_PERIOD
+P3_2019_2021           148                     48                 3                 0          16248.510000 2.252364 1.979469       108.075411                  2.077483 PASS_PERIOD
+P4_2022_2023            91                     29                 0                 3           -922.185000 0.926955 0.850940       -10.169572                 -0.152458 FAIL_PERIOD
+P5_2024_2025            94                     30                 3                 0          10462.562000 1.784914 1.431205       106.595056                  1.164487 PASS_PERIOD
+
+--- YEARLY AGGREGATE ---
+ Entry Year  Total Trades  Min Trades Any Market  Positive Markets  Negative Markets  Total Net Points Sum  Mean PF   Min PF  Mean Expectancy  Mean Trade Sharpe Approx          Status
+       2012            44                     14                 0                 3           -220.020603 0.839859 0.806094        -4.965698                 -0.243724     FAIL_PERIOD
+       2013            65                     17                 3                 0           3067.298488 2.059745 1.244896        58.529090                  1.073498     PASS_PERIOD
+       2014            59                     19                 3                 0           1768.962000 1.771616 1.076787        29.596125                  0.635250     PASS_PERIOD
+       2015            44                     14                 0                 3          -1454.941000 0.642656 0.554585       -32.510290                 -0.677096     FAIL_PERIOD
+       2016            29                      8                 3                 0           2437.341000 2.523776 1.909012        76.241407                  0.894222 PASS_LOW_TRADES
+       2017            31                      9                 3                 0           4349.872000 6.186832 3.863178       127.613322                  1.571125 PASS_LOW_TRADES
+       2018            38                     11                 1                 2            -69.992000 0.948368 0.889726        -1.659258                 -0.080574     FAIL_PERIOD
+       2019            42                     13                 3                 0           7070.266000 3.304472 2.564844       166.976658                  1.564806     PASS_PERIOD
+       2020            47                     13                 3                 0           7551.150000 4.364135 2.080689       164.383653                  1.972866     PASS_PERIOD
+       2021            59                     19                 3                 0           1627.094000 1.238994 1.055115        27.196065                  0.320691     PASS_PERIOD
+       2022            47                     15                 0                 3          -6812.289000 0.483287 0.366930      -145.875571                 -1.257040     FAIL_PERIOD
+       2023            44                     13                 3                 0           5890.104000 2.219500 1.600078       129.379307                  0.882565     PASS_PERIOD
+       2024            52                     17                 2                 1           2272.350000 1.385000 0.960563        42.435752                  0.493640     PASS_PERIOD
+       2025            42                     13                 3                 0           8190.212000 2.410893 1.743124       183.850248                  1.066394     PASS_PERIOD
+
+--- SUMMARY ---
+ Fixed EMA Fast  Fixed EMA Slow  Fixed ADX Threshold  Fixed Exit Confirm Bars  WF Periods  WF Periods Passing or Mixed Positive  WF Periods Failing  Positive Years  Negative Years Final Status                                                                                            Interpretation
+             70             120                   15                       10           5                                     4                   1              10               4 MIXED_REVIEW Fixed parameters have at least one weak period. Strategy may still be valid but needs regime explanation.
+Strategin är regimberoende, 4 negativa år av 10. Den stora röda flaggan är 2022-2023 vilket var en aggressiv bear marknad och strategin
+är endast long så det förklarar saken. Nästa steg är nu Fas 2C-2 Optimized Walk-Forward. Frågan där blir om train-optimering hade valt 
+parametrar som klarade 2022 bättre, eller är 2022 strukturellt dåligt för hela strategiidén?
