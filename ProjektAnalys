@@ -761,3 +761,115 @@ P5_2024_2025            94                     30                 3             
 Strategin är regimberoende, 4 negativa år av 10. Den stora röda flaggan är 2022-2023 vilket var en aggressiv bear marknad och strategin
 är endast long så det förklarar saken. Nästa steg är nu Fas 2C-2 Optimized Walk-Forward. Frågan där blir om train-optimering hade valt 
 parametrar som klarade 2022 bättre, eller är 2022 strukturellt dåligt för hela strategiidén?
+==============================
+FAS 2C-2 — OPTIMIZED WALK-FORWARD
+==============================
+Train optimization -> locked params -> future OOS test
+Grid sizes: fast=[60, 65, 70, 75, 80, 85, 90], slow=[110, 120, 130, 140, 150, 160], adx=[10, 15, 20, 25], exit=[7, 10, 12]
+Min slow-fast gap: 30
+Baseline kept for comparison only: {'ema_fast': 70, 'ema_slow': 120, 'adx': 15, 'exit': 10}
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+Configs per train window: 480
+
+--- WF1: train 2012-01-01 to 2016-12-31 | test 2017-01-01 to 2018-12-31 ---
+  train configs 50/480 | elapsed 242.8s
+  train configs 100/480 | elapsed 486.1s
+  train configs 150/480 | elapsed 729.6s
+  train configs 200/480 | elapsed 983.1s
+  train configs 250/480 | elapsed 1237.5s
+  train configs 300/480 | elapsed 1492.1s
+  train configs 350/480 | elapsed 1745.7s
+  train configs 400/480 | elapsed 1999.7s
+  train configs 450/480 | elapsed 2254.0s
+  train configs 480/480 | elapsed 2407.1s
+  selected: {'ema_fast': 70, 'ema_slow': 160, 'adx': 20, 'exit': 10} score=0.9662
+
+--- WF2: train 2012-01-01 to 2018-12-31 | test 2019-01-01 to 2020-12-31 ---
+  train configs 50/480 | elapsed 2744.7s
+  train configs 100/480 | elapsed 3078.3s
+  train configs 150/480 | elapsed 3414.4s
+  train configs 200/480 | elapsed 3748.6s
+  train configs 250/480 | elapsed 4090.2s
+  train configs 300/480 | elapsed 4427.8s
+  train configs 350/480 | elapsed 4762.2s
+  train configs 400/480 | elapsed 5096.5s
+  train configs 450/480 | elapsed 5436.2s
+  train configs 480/480 | elapsed 5657.7s
+  selected: {'ema_fast': 70, 'ema_slow': 160, 'adx': 20, 'exit': 12} score=0.9876
+
+--- WF3: train 2012-01-01 to 2020-12-31 | test 2021-01-01 to 2022-12-31 ---
+  train configs 50/480 | elapsed 6149.6s
+  train configs 100/480 | elapsed 6589.3s
+  train configs 150/480 | elapsed 7027.6s
+  train configs 200/480 | elapsed 7464.7s
+  train configs 250/480 | elapsed 7905.2s
+  train configs 300/480 | elapsed 8344.3s
+  train configs 350/480 | elapsed 8788.8s
+  train configs 400/480 | elapsed 9266.4s
+  train configs 450/480 | elapsed 9710.1s
+  train configs 480/480 | elapsed 9968.1s
+  selected: {'ema_fast': 85, 'ema_slow': 160, 'adx': 20, 'exit': 10} score=0.9888
+
+--- WF4: train 2014-01-01 to 2021-12-31 | test 2022-01-01 to 2023-12-31 ---
+  train configs 50/480 | elapsed 10338.7s
+  train configs 100/480 | elapsed 10703.5s
+  train configs 150/480 | elapsed 11068.8s
+  train configs 200/480 | elapsed 11433.5s
+  train configs 250/480 | elapsed 11804.0s
+  train configs 300/480 | elapsed 12171.0s
+  train configs 350/480 | elapsed 12536.7s
+  train configs 400/480 | elapsed 12900.8s
+  train configs 450/480 | elapsed 13277.1s
+  train configs 480/480 | elapsed 13502.5s
+  selected: {'ema_fast': 85, 'ema_slow': 160, 'adx': 20, 'exit': 12} score=0.9951
+
+--- WF5: train 2016-01-01 to 2022-12-31 | test 2023-01-01 to 2025-12-31 ---
+  train configs 50/480 | elapsed 13837.0s
+  train configs 100/480 | elapsed 14164.3s
+  train configs 150/480 | elapsed 14496.3s
+  train configs 200/480 | elapsed 14823.4s
+  train configs 250/480 | elapsed 15149.3s
+  train configs 300/480 | elapsed 15475.2s
+  train configs 350/480 | elapsed 15800.4s
+  train configs 400/480 | elapsed 16125.4s
+  train configs 450/480 | elapsed 16450.2s
+  train configs 480/480 | elapsed 16646.5s
+  selected: {'ema_fast': 85, 'ema_slow': 120, 'adx': 25, 'exit': 12} score=0.9626
+
+--- SELECTED PARAMS BY WF ---
+ WF Train Start  Train End Test Start   Test End  ema_fast  ema_slow  adx  exit  Train Robustness Score  Train Positive Markets
+WF1  2012-01-01 2016-12-31 2017-01-01 2018-12-31        70       160   20    10                0.966250                       3
+WF2  2012-01-01 2018-12-31 2019-01-01 2020-12-31        70       160   20    12                0.987604                       3
+WF3  2012-01-01 2020-12-31 2021-01-01 2022-12-31        85       160   20    10                0.988750                       3
+WF4  2014-01-01 2021-12-31 2022-01-01 2023-12-31        85       160   20    12                0.995104                       3
+WF5  2016-01-01 2022-12-31 2023-01-01 2025-12-31        85       120   25    12                0.962604                       3
+
+--- OOS PERIOD COMPARISON ---
+ WF  Selected Total Net Points  Baseline Total Net Points  Selected Mean PF  Baseline Mean PF  Selected Positive Markets  Baseline Positive Markets  Selected Minus Baseline Net Points  Selected/Baseline Net Points Ratio Selected Status Baseline Status
+WF1                   4363.683                   4751.491          2.414302          2.501488                          3                          3                            -387.808                            0.918382        PASS_OOS        PASS_OOS
+WF2                  13365.679                  14629.871          4.788489          3.615228                          3                          3                           -1264.192                            0.913588        PASS_OOS        PASS_OOS
+WF3                  -2489.423                  -5185.195          0.772049          0.729544                          0                          0                            2695.772                            0.480102        FAIL_OOS        FAIL_OOS
+WF4                   1262.190                   -348.575          1.084427          0.955476                          3                          0                            1610.765                           -3.621000        PASS_OOS        FAIL_OOS
+WF5                  12519.850                  16352.666          2.066914          1.866580                          3                          3                           -3832.816                            0.765615        PASS_OOS        PASS_OOS
+
+--- SUMMARY ---
+ WF Windows  Selected PASS OOS Count  Baseline PASS OOS Count  Selected PASS Rate  Baseline PASS Rate  Selected Total OOS Net Points  Baseline Total OOS Net Points Final Status                                Interpretation
+          5                        4                        3                 0.8                 0.6                      29021.979                      30200.258  PASS_REVIEW Optimized WF process passes most OOS windows.
+
+Files created:
+  fas_2c2_train_market_results.csv
+  fas_2c2_train_ranked_configs.csv
+  fas_2c2_selected_params_by_wf.csv
+  fas_2c2_oos_selected_market_results.csv
+  fas_2c2_oos_baseline_market_results.csv
+  fas_2c2_oos_period_aggregate.csv
+  fas_2c2_oos_selected_vs_baseline.csv
+  fas_2c2_summary.csv
+  fas_2c2_oos_trade_logs.csv
+
+RESULT: REVIEW — compare selected OOS vs fixed baseline. Do not adopt optimized params unless OOS improves consistently and selected regions are stable.
