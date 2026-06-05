@@ -857,6 +857,7 @@ WF3                  -2489.423                  -5185.195          0.772049     
 WF4                   1262.190                   -348.575          1.084427          0.955476                          3                          0                            1610.765                           -3.621000        PASS_OOS        FAIL_OOS
 WF5                  12519.850                  16352.666          2.066914          1.866580                          3                          3                           -3832.816                            0.765615        PASS_OOS        PASS_OOS
 
+
 --- SUMMARY ---
  WF Windows  Selected PASS OOS Count  Baseline PASS OOS Count  Selected PASS Rate  Baseline PASS Rate  Selected Total OOS Net Points  Baseline Total OOS Net Points Final Status                                Interpretation
           5                        4                        3                 0.8                 0.6                      29021.979                      30200.258  PASS_REVIEW Optimized WF process passes most OOS windows.
@@ -873,3 +874,215 @@ Files created:
   fas_2c2_oos_trade_logs.csv
 
 RESULT: REVIEW — compare selected OOS vs fixed baseline. Do not adopt optimized params unless OOS improves consistently and selected regions are stable.
+De valda parametrarna är relativt konsekventa genom alla perioder, ofta blir det långsammare varienter än baseline runt ungefär samma område. Det 
+stärker ett robust parameterområde. Men i OOS jämförelsen är baseline bättre i WF1, WF2, WF5 och optimized lyckas förlora mindre i WF3 och vända om WF4 
+till positivt. Det finns ingen tydlig anledning att byta baseline enbart baserat på optimized walk forward. 2022 är fortfarande en strukturell svår 
+regim även med bättre parametrar. För att rationellt välja okm vi ska gå över till långsammare parameter variation som t.ex. 85/160/20/12 eller
+70/160/20/12 måste vi göra mer tester. Vi bör jämföra baseline med dessa mer noggrant där vi kollar på årliga resultat specifikt 2022, trade count,
+profit factor, drawdown, missad vinst 2023-2025 och värsta 12 månaders rullande resultat. Detta blir Fas 2C-3: Baseline vs Candidate Regime Comparison
+==============================
+FAS 2C-3 — BASELINE VS CANDIDATES
+==============================
+Configs:
+  Baseline_70_120_ADX15_EXIT10: EMA 70/120, ADX 15, exit 10
+  CandidateA_85_160_ADX20_EXIT12: EMA 85/160, ADX 20, exit 12
+  CandidateB_70_160_ADX20_EXIT12: EMA 70/160, ADX 20, exit 12
+  CandidateC_85_160_ADX20_EXIT10: EMA 85/160, ADX 20, exit 10
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  US500: trades=202 | NetPts=2723.29 | PF=1.556 | SharpeApprox=2.059
+  USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | SharpeApprox=1.611
+  US30: trades=218 | NetPts=24090.29 | PF=1.591 | SharpeApprox=2.243
+
+Running config: CandidateA_85_160_ADX20_EXIT12
+  US500: trades=135 | NetPts=2677.67 | PF=1.781 | SharpeApprox=2.275
+  USTEC: trades=147 | NetPts=11826.63 | PF=1.806 | SharpeApprox=2.077
+  US30: trades=147 | NetPts=20969.22 | PF=1.725 | SharpeApprox=2.218
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  US500: trades=149 | NetPts=2787.78 | PF=1.768 | SharpeApprox=2.310
+  USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | SharpeApprox=1.991
+  US30: trades=156 | NetPts=23169.35 | PF=1.771 | SharpeApprox=2.342
+
+Running config: CandidateC_85_160_ADX20_EXIT10
+  US500: trades=138 | NetPts=2587.00 | PF=1.727 | SharpeApprox=2.167
+  USTEC: trades=149 | NetPts=12611.62 | PF=1.903 | SharpeApprox=2.264
+  US30: trades=149 | NetPts=21106.85 | PF=1.693 | SharpeApprox=2.183
+
+--- FULL AGGREGATE COMPARISON ---
+                        Config  Total Trades  Min Trades Any Market  Positive Markets  Negative Markets  Total Net Points Sum  Mean PF   Min PF  Mean Expectancy  Mean Trade Sharpe Approx  Worst Market Net Points
+CandidateC_85_160_ADX20_EXIT10           436                    138                 3                 0          36305.469738 1.774358 1.692762        81.681611                  2.204659              2587.001873
+CandidateB_70_160_ADX20_EXIT12           461                    149                 3                 0          36185.436806 1.753514 1.721254        77.599159                  2.214575              2787.784981
+  Baseline_70_120_ADX15_EXIT10           643                    202                 3                 0          35667.406885 1.526320 1.432431        54.563603                  1.971250              2723.289005
+CandidateA_85_160_ADX20_EXIT12           429                    135                 3                 0          35473.510401 1.770826 1.725192        80.978515                  2.190149              2677.667907
+
+--- REGIME PERIOD AGGREGATE ---
+                        Config              Period  Total Trades  Positive Markets  Total Net Points Sum  Mean PF  Mean Trade Sharpe Approx      Status
+  Baseline_70_120_ADX15_EXIT10      Full_2012_2025           643                 3          35667.406885 1.526320                  1.971250 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10     Early_2012_2015           212                 2           3161.298885 1.241833                  0.564390 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10  PreCovid_2016_2019           140                 3          13787.487000 2.531309                  2.140795 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10          Covid_2020            47                 3           7551.150000 4.364135                  1.972866 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10           Bull_2021            59                 3           1627.094000 1.238994                  0.320691 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10 RateShock_Bear_2022            47                 0          -6812.289000 0.483287                 -1.257040 FAIL_PERIOD
+  Baseline_70_120_ADX15_EXIT10       Recovery_2023            44                 3           5890.104000 2.219500                  0.882565 PASS_PERIOD
+  Baseline_70_120_ADX15_EXIT10    Recent_2024_2025            94                 3          10462.562000 1.784914                  1.164487 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12      Full_2012_2025           429                 3          35473.510401 1.770826                  2.190149 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12     Early_2012_2015           150                 3           1964.008401 1.224318                  0.514874 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12  PreCovid_2016_2019            87                 3          13674.552000 3.783481                  2.366913 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12          Covid_2020            25                 3           9958.303000 9.582270                  1.947288 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12           Bull_2021            34                 2            851.989000 1.309237                  0.186165 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12 RateShock_Bear_2022            33                 0          -3612.080000 0.581652                 -0.998028 FAIL_PERIOD
+CandidateA_85_160_ADX20_EXIT12       Recovery_2023            33                 3           4086.529000 2.365360                  0.821010 PASS_PERIOD
+CandidateA_85_160_ADX20_EXIT12    Recent_2024_2025            67                 3           8550.209000 1.797298                  1.031070 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12      Full_2012_2025           461                 3          36185.436806 1.753514                  2.214575 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12     Early_2012_2015           161                 3           2076.788806 1.296737                  0.688126 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12  PreCovid_2016_2019            92                 3          14370.641000 3.678309                  2.232338 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12          Covid_2020            27                 3           7530.727000 6.146371                  1.975136 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12           Bull_2021            44                 2            825.749000 1.183509                  0.180407 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12 RateShock_Bear_2022            32                 1          -2391.669000 0.673991                 -0.647119 FAIL_PERIOD
+CandidateB_70_160_ADX20_EXIT12       Recovery_2023            37                 3           3322.823000 1.714354                  0.586025 PASS_PERIOD
+CandidateB_70_160_ADX20_EXIT12    Recent_2024_2025            68                 3          10450.377000 2.146695                  1.275164 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10      Full_2012_2025           436                 3          36305.469738 1.774358                  2.204659 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10     Early_2012_2015           153                 3           1852.886738 1.236174                  0.535680 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10  PreCovid_2016_2019            87                 3          14568.345000 4.017925                  2.421151 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10          Covid_2020            26                 3           9957.907000 9.945691                  1.945432 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10           Bull_2021            35                 2            781.552000 1.324132                  0.199908 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10 RateShock_Bear_2022            34                 1          -3215.712000 0.617199                 -0.934951 FAIL_PERIOD
+CandidateC_85_160_ADX20_EXIT10       Recovery_2023            34                 3           4037.326000 2.251802                  0.777567 PASS_PERIOD
+CandidateC_85_160_ADX20_EXIT10    Recent_2024_2025            67                 3           8323.165000 1.851178                  1.021623 PASS_PERIOD
+
+--- SCORECARD ---
+                        Config  Comparison Score  Total Net Points Sum  Positive Years  Negative Years  Worst Year  Worst Year Net Points  2022 Net Points  Worst Rolling 12M Net Points  Rolling Pass/Mixed Rate
+CandidateB_70_160_ADX20_EXIT12          0.768403          36185.436806              10               4        2022              -2391.669        -2391.669                     -5705.411                 0.810127
+CandidateC_85_160_ADX20_EXIT10          0.766562          36305.469738              10               4        2022              -3215.712        -3215.712                     -4806.617                 0.803797
+CandidateA_85_160_ADX20_EXIT12          0.762817          35473.510401              10               4        2022              -3612.080        -3612.080                     -5239.804                 0.803797
+  Baseline_70_120_ADX15_EXIT10          0.751433          35667.406885              10               4        2022              -6812.289        -6812.289                     -7745.629                 0.822785
+
+Files created:
+  fas_2c3_config_market_full_results.csv
+  fas_2c3_config_aggregate_full_results.csv
+  fas_2c3_yearly_market_results.csv
+  fas_2c3_yearly_aggregate_results.csv
+  fas_2c3_regime_period_aggregate.csv
+  fas_2c3_rolling_12m_results.csv
+  fas_2c3_config_scorecard.csv
+  fas_2c3_trade_log_all_configs.csv
+
+RESULT: REVIEW — compare baseline vs candidates. Prefer broad year/rolling robustness over best full-period PnL.
+Dessa resultat lutar ännu mer mot långsammare variation. Baseline har fler fler trades (643), lägre PF (1.53), sämre trade Sharpe (1.97), 
+mycket sämre 2022 och mycket sämre rolling downside. Baseline hade -6812 i 2022 samtidigt som kandidat B hade -2392, det är en 65% mindre
+förlust. Det är en sådanhär förbättring som brukar ge riktig edge, långsammare trend med striktare filter och därmed färre dåliga signaler.
+Men färre trades kan också gör analysen missvisande, kandidat B har 461 trades jämfört med baseline sopm har 643 så förbättringen kommer
+från att strategin säger nej oftare vilket inte behöver vara dåligt men vi måste fortsätta verifiera innan vi tar beslut. Kandidat B är
+utan tvekan bäst och kandidat A sämst av kandidaterna. Det vi ska göra nu är Fas 2D - stability under stress där vi tar baseline, kandidat
+B och C och utsätter dem för stress.
+==============================
+FAS 2D — STRESS ROBUSTNESS
+==============================
+Configs:
+  Baseline_70_120_ADX15_EXIT10: EMA 70/120, ADX 15, exit 10
+  CandidateB_70_160_ADX20_EXIT12: EMA 70/160, ADX 20, exit 12
+  CandidateC_85_160_ADX20_EXIT10: EMA 85/160, ADX 20, exit 10
+Stress scenarios:
+  BASE: spread x1.0, slip x1.0, comm x1.0, fill_delay=1
+  2X_SPREAD_SLIPPAGE: spread x2.0, slip x2.0, comm x1.0, fill_delay=1
+  3X_SPREAD_SLIPPAGE: spread x3.0, slip x3.0, comm x1.0, fill_delay=1
+  2X_ALL_COSTS: spread x2.0, slip x2.0, comm x2.0, fill_delay=1
+  3X_ALL_COSTS: spread x3.0, slip x3.0, comm x3.0, fill_delay=1
+  ONE_EXTRA_BAR_DELAY: spread x1.0, slip x1.0, comm x1.0, fill_delay=2
+Trade skip: probs=[0.1, 0.2], iterations=200
+Remove best trades: [5, 10]
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  BASE: NetPts=35667.41 | MeanPF=1.526 | MeanSharpe=1.971 | Status=PASS_STRESS
+  2X_SPREAD_SLIPPAGE: NetPts=34510.01 | MeanPF=1.483 | MeanSharpe=1.843 | Status=PASS_STRESS
+  3X_SPREAD_SLIPPAGE: NetPts=33352.61 | MeanPF=1.442 | MeanSharpe=1.715 | Status=PASS_STRESS
+  2X_ALL_COSTS: NetPts=34445.71 | MeanPF=1.480 | MeanSharpe=1.836 | Status=PASS_STRESS
+  3X_ALL_COSTS: NetPts=33224.01 | MeanPF=1.437 | MeanSharpe=1.701 | Status=PASS_STRESS
+  ONE_EXTRA_BAR_DELAY: NetPts=34574.39 | MeanPF=1.518 | MeanSharpe=1.951 | Status=PASS_STRESS
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  BASE: NetPts=36185.44 | MeanPF=1.754 | MeanSharpe=2.215 | Status=PASS_STRESS
+  2X_SPREAD_SLIPPAGE: NetPts=35355.64 | MeanPF=1.707 | MeanSharpe=2.113 | Status=PASS_STRESS
+  3X_SPREAD_SLIPPAGE: NetPts=34525.84 | MeanPF=1.662 | MeanSharpe=2.011 | Status=PASS_STRESS
+  2X_ALL_COSTS: NetPts=35309.54 | MeanPF=1.704 | MeanSharpe=2.107 | Status=PASS_STRESS
+  3X_ALL_COSTS: NetPts=34433.64 | MeanPF=1.657 | MeanSharpe=2.000 | Status=PASS_STRESS
+  ONE_EXTRA_BAR_DELAY: NetPts=34844.53 | MeanPF=1.750 | MeanSharpe=2.200 | Status=PASS_STRESS
+
+Running config: CandidateC_85_160_ADX20_EXIT10
+  BASE: NetPts=36305.47 | MeanPF=1.774 | MeanSharpe=2.205 | Status=PASS_STRESS
+  2X_SPREAD_SLIPPAGE: NetPts=35520.67 | MeanPF=1.730 | MeanSharpe=2.110 | Status=PASS_STRESS
+  3X_SPREAD_SLIPPAGE: NetPts=34735.87 | MeanPF=1.688 | MeanSharpe=2.015 | Status=PASS_STRESS
+  2X_ALL_COSTS: NetPts=35477.07 | MeanPF=1.727 | MeanSharpe=2.105 | Status=PASS_STRESS
+  3X_ALL_COSTS: NetPts=34648.67 | MeanPF=1.683 | MeanSharpe=2.005 | Status=PASS_STRESS
+  ONE_EXTRA_BAR_DELAY: NetPts=34835.11 | MeanPF=1.755 | MeanSharpe=2.178 | Status=PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10 RANDOM_SKIP_10PCT: p05Net=25273.67 | pass_rate=100.00%
+  Baseline_70_120_ADX15_EXIT10 RANDOM_SKIP_20PCT: p05Net=21408.90 | pass_rate=100.00%
+  CandidateB_70_160_ADX20_EXIT12 RANDOM_SKIP_10PCT: p05Net=25671.14 | pass_rate=100.00%
+  CandidateB_70_160_ADX20_EXIT12 RANDOM_SKIP_20PCT: p05Net=21271.15 | pass_rate=100.00%
+  CandidateC_85_160_ADX20_EXIT10 RANDOM_SKIP_10PCT: p05Net=26078.91 | pass_rate=100.00%
+  CandidateC_85_160_ADX20_EXIT10 RANDOM_SKIP_20PCT: p05Net=20766.88 | pass_rate=100.00%
+
+--- AGGREGATE STRESS RESULTS ---
+                        Config       Stress Scenario  Total Trades  Positive Markets  Total Net Points Sum  Mean PF  Mean Trade Sharpe Approx  Net Points Retention Stress Status
+  Baseline_70_120_ADX15_EXIT10          2X_ALL_COSTS         643.0               3.0          34445.706885 1.480326                  1.835952              0.965747   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10    2X_SPREAD_SLIPPAGE         643.0               3.0          34510.006885 1.482675                  1.843073              0.967550   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10          3X_ALL_COSTS         643.0               3.0          33224.006885 1.437157                  1.700654              0.931495   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10    3X_SPREAD_SLIPPAGE         643.0               3.0          33352.606885 1.441573                  1.714896              0.935100   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10                  BASE         643.0               3.0          35667.406885 1.526320                  1.971250              1.000000   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10   ONE_EXTRA_BAR_DELAY         643.0               3.0          34574.393994 1.517906                  1.951368              0.969355   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10     RANDOM_SKIP_10PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10     RANDOM_SKIP_20PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10 REMOVE_BEST_10_TRADES         633.0               3.0          12306.137885 1.302841                  1.225514              0.345025   PASS_STRESS
+  Baseline_70_120_ADX15_EXIT10  REMOVE_BEST_5_TRADES         638.0               3.0          21054.018885 1.388592                  1.572003              0.590287   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12          2X_ALL_COSTS         461.0               3.0          35309.536806 1.704109                  2.107156              0.975794   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12    2X_SPREAD_SLIPPAGE         461.0               3.0          35355.636806 1.706638                  2.112810              0.977068   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12          3X_ALL_COSTS         461.0               3.0          34433.636806 1.657308                  1.999737              0.951588   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12    3X_SPREAD_SLIPPAGE         461.0               3.0          34525.836806 1.662112                  2.011044              0.954136   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12                  BASE         461.0               3.0          36185.436806 1.753514                  2.214575              1.000000   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12   ONE_EXTRA_BAR_DELAY         461.0               3.0          34844.526927 1.750347                  2.199985              0.962943   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12     RANDOM_SKIP_10PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12     RANDOM_SKIP_20PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12 REMOVE_BEST_10_TRADES         451.0               3.0          13457.001806 1.467568                  1.489924              0.371890   PASS_STRESS
+CandidateB_70_160_ADX20_EXIT12  REMOVE_BEST_5_TRADES         456.0               3.0          21742.657806 1.559505                  1.822021              0.600868   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10          2X_ALL_COSTS         436.0               3.0          35477.069738 1.727419                  2.104749              0.977183   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10    2X_SPREAD_SLIPPAGE         436.0               3.0          35520.669738 1.729823                  2.110008              0.978383   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10          3X_ALL_COSTS         436.0               3.0          34648.669738 1.682978                  2.004840              0.954365   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10    3X_SPREAD_SLIPPAGE         436.0               3.0          34735.869738 1.687553                  2.015357              0.956767   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10                  BASE         436.0               3.0          36305.469738 1.774358                  2.204659              1.000000   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10   ONE_EXTRA_BAR_DELAY         436.0               3.0          34835.105112 1.754878                  2.178369              0.959500   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10     RANDOM_SKIP_10PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10     RANDOM_SKIP_20PCT           NaN               NaN                   NaN      NaN                       NaN                   NaN   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10 REMOVE_BEST_10_TRADES         426.0               3.0          13271.982738 1.442335                  1.428025              0.365564   PASS_STRESS
+CandidateC_85_160_ADX20_EXIT10  REMOVE_BEST_5_TRADES         431.0               3.0          21688.740738 1.576928                  1.804789              0.597396   PASS_STRESS
+
+--- STRESS SCORECARD ---
+                        Config  Base Net Points  Base Mean PF  Worst Stress Net Points  Worst Net Points Retention  Worst PF  Worst Mean Sharpe  PASS_STRESS Rate  MIXED/FAIL Count  Stress Robustness Score
+CandidateB_70_160_ADX20_EXIT12     36185.436806      1.753514             13457.001806                    0.371890  1.467568           1.489924               1.0                 0                 0.589414
+CandidateC_85_160_ADX20_EXIT10     36305.469738      1.774358             13271.982738                    0.365564  1.442335           1.428025               1.0                 0                 0.579832
+  Baseline_70_120_ADX15_EXIT10     35667.406885      1.526320             12306.137885                    0.345025  1.302841           1.225514               1.0                 0                 0.541402
+
+Files created:
+  fas_2d_stress_market_results.csv
+  fas_2d_stress_aggregate_results.csv
+  fas_2d_trade_skip_simulations.csv
+  fas_2d_stress_scorecard.csv
+  fas_2d_trade_log_all_scenarios.csv
+
+RESULT: REVIEW — highest stress robustness score: CandidateB_70_160_ADX20_EXIT12. Prefer configs that survive all stress types, not just best base PnL.
+Kandidat B vinner inte med extrem marginal men konsekvent i varje test. Nu har vi två kandidater, produktionskandidaten 70 / 160 / ADX 20 / EXIT 12 och 
+original kandidaten 70 / 120 / ADX 15 / EXIT 10. Fas 3 blir att förstå varför kandidat B är bättre. Tar den färre dåliga trades? Håller den vinnare 
+längre? Filtrerar den bort 2022? Är den bättre per marknadsregim? Är förbättringen koncentrerad till några få år eller är den jämn?
