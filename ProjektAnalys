@@ -1085,4 +1085,91 @@ Files created:
 RESULT: REVIEW — highest stress robustness score: CandidateB_70_160_ADX20_EXIT12. Prefer configs that survive all stress types, not just best base PnL.
 Kandidat B vinner inte med extrem marginal men konsekvent i varje test. Nu har vi två kandidater, produktionskandidaten 70 / 160 / ADX 20 / EXIT 12 och 
 original kandidaten 70 / 120 / ADX 15 / EXIT 10. Fas 3 blir att förstå varför kandidat B är bättre. Tar den färre dåliga trades? Håller den vinnare 
-längre? Filtrerar den bort 2022? Är den bättre per marknadsregim? Är förbättringen koncentrerad till några få år eller är den jämn?
+längre? Filtrerar den bort 2022? Är den bättre per marknadsregim? Är förbättringen koncentrerad till några få år eller är den jämn? Vi lägger upp 
+fas 3 på detta sätt:
+Fas 3A — Trade Attribution
+Mål:
+Förstå var PnL faktiskt kommer ifrån.
+För varje kandidat (Baseline + Candidate B) mät:
+Trade-level
+antal trades
+win rate
+average winner
+average loser
+payoff ratio
+median winner
+median loser
+holding time
+expectancy
+PnL concentration
+topp 5 trades (% av total PnL)
+topp 10 trades
+topp 20 trades
+Gini av trade-PnL
+Lorenz-kurva
+Frågor:
+kommer edge från många små vinster?
+eller några monstertrades?
+
+Fas 3B — Regime Attribution
+Mål:
+Förstå när edge uppstår.
+Bryt resultat efter:
+Vol-regim
+låg
+medium
+hög
+Trend-regim
+ADX låg
+ADX hög
+Market state
+index över 200D
+index under 200D
+Drawdown state
+ny ATH
+korrigering
+bear
+Output:
+| Regime | PF | Sharpe | Expectancy |
+Frågor:
+fungerar strategin bara i bull?
+hjälper Candidate B i 2022?
+
+Fas 3C — Trade Lifecycle
+Mål:
+Förstå vad Candidate B filtrerar bort. För varje trade, analysera:
+Entry quality
+MA separation
+ADX
+distance to EMA
+Exit quality
+MFE
+MAE
+realized capture %
+Missed opportunity
+hur mycket låg kvar efter exit?
+Frågor:
+håller Candidate B vinnare längre?
+eller undviker den förlorare?
+
+Fas 3D — Cross-Market Edge
+Mål:
+Förstå om edge verkligen är diversifierad. Per marknad:
+trade overlap
+simultana positioner
+korrelation av daglig PnL
+korrelation av drawdowns
+marginal contribution
+Fråga:
+är detta egentligen bara US-equity beta?
+
+Fas 3E — Explain Candidate B
+Det här blir sista steget. Nu jämför vi direkt Baseline vs Candidate B. för varje trade:
+trade taken by both
+trade only baseline
+trade only candidate
+och mäter:
+vad filtrerades bort
+vad blev bättre
+vad förlorades
+
