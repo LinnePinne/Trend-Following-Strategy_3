@@ -1172,4 +1172,215 @@ och mäter:
 vad filtrerades bort
 vad blev bättre
 vad förlorades
+==============================
+FAS 3A — TRADE ATTRIBUTION
+==============================
+Configs:
+  Baseline_70_120_ADX15_EXIT10: EMA 70/120, ADX 15, exit 10
+  CandidateB_70_160_ADX20_EXIT12: EMA 70/160, ADX 20, exit 12
 
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  US500: trades=202 | NetPts=2723.29 | PF=1.556 | Exp=13.48 | AvgHoldDays=15.3
+  USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | Exp=39.70 | AvgHoldDays=13.8
+  US30: trades=218 | NetPts=24090.29 | PF=1.591 | Exp=110.51 | AvgHoldDays=14.1
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  US500: trades=149 | NetPts=2787.78 | PF=1.768 | Exp=18.71 | AvgHoldDays=19.0
+  USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | Exp=65.57 | AvgHoldDays=17.5
+  US30: trades=156 | NetPts=23169.35 | PF=1.771 | Exp=148.52 | AvgHoldDays=17.7
+
+--- CONFIG TRADE SUMMARY ---
+                        Config Market  Trades  Win Rate  Total Net Points  Profit Factor  Expectancy  Payoff Ratio AvgWin/AvgLoss  Trade Sharpe Approx  Avg Holding Days  Max Trade DD Points
+  Baseline_70_120_ADX15_EXIT10    ALL     643  0.423017      35667.406885       1.539211   55.470306                     2.099439             2.932951         14.368261            -6852.210
+CandidateB_70_160_ADX20_EXIT12    ALL     461  0.453362      36185.436806       1.756191   78.493355                     2.117513             3.217548         18.053236            -5222.492
+
+--- PNL CONCENTRATION — ALL MARKETS ---
+                        Config Market  Trades  Total Net Points  Winner Gini  Abs PnL Gini  Top 5 Trades % of Total  Top 10 Trades % of Total  Top 20 Trades % of Total
+  Baseline_70_120_ADX15_EXIT10    ALL     643      35667.406885     0.629590      0.635773                 0.409713                  0.654975                  1.050072
+CandidateB_70_160_ADX20_EXIT12    ALL     461      36185.436806     0.633659      0.648512                 0.399132                  0.628110                  0.997299
+
+--- INTERPRETATION FLAGS ---
+Baseline_70_120_ADX15_EXIT10: top10_share=65.50% | winner_gini=0.630 | WATCH: moderate concentration in top 10 trades
+CandidateB_70_160_ADX20_EXIT12: top10_share=62.81% | winner_gini=0.634 | WATCH: moderate concentration in top 10 trades
+
+Files created:
+  fas_3a_trade_log_all_configs.csv
+  fas_3a_trade_level_summary.csv
+  fas_3a_market_summary.csv
+  fas_3a_pnl_concentration.csv
+  fas_3a_holding_time_summary.csv
+  fas_3a_yearly_trade_attribution.csv
+  fas_3a_top_trades.csv
+  fas_3a_lorenz_curve_points.csv
+
+RESULT: REVIEW — compare Candidate B vs Baseline. Prefer cleaner PnL attribution, lower concentration, and better payoff/holding-time 
+structure; not just higher total PnL.
+Kandidat B förbättrar strategin genom färre trades, högre win rate, högra expectancy, hålla trades längre, bättre profit factor i alla tre
+marknader och att inte öka pnl koncentration märkvärt.
+Baseline:
+643 trades
+Win rate: 42.3%
+Total Net Points: 35,667
+PF: 1.54
+Expectancy: 55.47
+Avg holding: 14.4 dagar
+Candidate B:
+461 trades
+Win rate: 45.3%
+Total Net Points: 36,185
+PF: 1.76
+Expectancy: 78.49
+Avg holding: 18.1 dagar
+Candidate B håller trades längre:
+14.4 dagar → 18.1 dagar
+Det bekräftar att Candidate B är en renare och långsammare trendmodell. Den reagerar inte lika snabbt på mindre kortsiktiga trendförsök,
+men när den väl går in fångar den större rörelser. Båda har måttlig Pnl koncentration. 
+Baseline:
+Top 10 trades = 65.5% av total PnL
+Candidate B:
+Top 10 trades = 62.8% av total PnL
+Det är högt, men normalt för trendföljande system. Det viktiga är att candidate B förbättrar inte bara genom att bli mer beroende av några 
+få monstertrades. Top 10-koncentrationen är faktiskt lite lägre än baseline. Det här är den första analysen där vi börjar luta tydligt åt
+att byta till candidate B. Inte för att den har högst total PnL, utan för att förbättringen är kvalitativt bättre. Top 10 trades står 
+fortfarande för över 60% av total PnL. Det betyder att strategin fortfarande är en typisk trendföljare med många små/mellan förluster, några 
+stora vinnare driver resultatet. Det är inte dåligt, men det betyder att live trading kräver uthållighet. Man måste kunna sitta igenom 
+perioder där edge inte syns. Nu kör vi Fas 3B
+==============================
+FAS 3B — REGIME ATTRIBUTION
+==============================
+Configs:
+  Baseline_70_120_ADX15_EXIT10: EMA 70/120, ADX 15, exit 10
+  CandidateB_70_160_ADX20_EXIT12: EMA 70/160, ADX 20, exit 12
+Regimes: Vol60D, ADX at entry, 200D state, drawdown state, MA separation, named periods
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  US500: trades=202 | NetPts=2723.29 | PF=1.556 | Exp=13.48
+  USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | Exp=39.70
+  US30: trades=218 | NetPts=24090.29 | PF=1.591 | Exp=110.51
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  US500: trades=149 | NetPts=2787.78 | PF=1.768 | Exp=18.71
+  USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | Exp=65.57
+  US30: trades=156 | NetPts=23169.35 | PF=1.771 | Exp=148.52
+
+--- CONFIG SCORECARD BY REGIME ---
+                        Config  Regime Buckets With Enough Trades  PASS_REGIME Count  FAIL_REGIME Count  PASS_REGIME Rate  FAIL_REGIME Rate  Worst Regime Net Points  Worst Regime PF                     Worst Regime
+  Baseline_70_120_ADX15_EXIT10                                 21                 19                  2          0.904762          0.095238                -6812.289         0.573180 RegimePeriod=RateShock_Bear_2022
+CandidateB_70_160_ADX20_EXIT12                                 19                 17                  1          0.894737          0.052632                -2391.669         0.764964 RegimePeriod=RateShock_Bear_2022
+
+--- REGIME SUMMARY — ALL MARKETS ONLY ---
+                        Config          Dimension                Regime  Trades  Total Net Points  Profit Factor  Expectancy  Trade Sharpe Approx            Status
+  Baseline_70_120_ADX15_EXIT10          ADXRegime        ADX_High_20-25     106       7742.730912       1.699458   73.044631             1.529579       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10          ADXRegime         ADX_Mid_15-20     123      -3755.802985       0.774981  -30.534984            -0.844598       FAIL_REGIME
+  Baseline_70_120_ADX15_EXIT10          ADXRegime      ADX_VeryHigh_>25     414      31680.478958       1.825297   76.522896             3.140189       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12          ADXRegime        ADX_High_20-25      85       2932.992609       1.281699   34.505795             0.630545       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12          ADXRegime      ADX_VeryHigh_>25     376      33252.444197       1.888143   88.437352             3.246658       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10      DrawdownState      Bear_-10_to_-20%      68      13173.629815       2.058329  193.729850             1.668663       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10      DrawdownState Correction_-2_to_-10%     266      13644.611748       1.477051   51.295533             1.915741       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10      DrawdownState        DeepBear_<-20%      31       3492.686000       1.822083  112.667290             1.061982       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10      DrawdownState      NearATH_0_to_-2%     278       5356.479322       1.256915   19.267911             1.103605       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12      DrawdownState      Bear_-10_to_-20%      47      11604.295000       2.447226  246.899894             1.855417       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12      DrawdownState Correction_-2_to_-10%     193      19371.757914       1.991407  100.371803             2.563202       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12      DrawdownState        DeepBear_<-20%      23        346.265000       1.069152   15.055000             0.108817    MIXED_POSITIVE
+CandidateB_70_160_ADX20_EXIT12      DrawdownState      NearATH_0_to_-2%     198       4863.118892       1.318121   24.561207             1.103614       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10         MA200State             Above200D     517      18715.237476       1.411481   36.199686             2.301352       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10         MA200State             Below200D     116      16740.168785       1.818923  144.311800             1.858264       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10         MA200State          MA200Unknown      10        212.000624       1.950464   21.200062             0.713719       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12         MA200State             Above200D     371      21723.655752       1.671699   58.554328             2.878115       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12         MA200State             Below200D      81      14605.500819       1.970669  180.314825             1.757480       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12         MA200State          MA200Unknown       9       -143.719765       0.690292  -15.968863            -0.411324 LOW_TRADES_REVIEW
+  Baseline_70_120_ADX15_EXIT10 MASeparationRegime      Sep_Tight_<0.25%     643      35667.406885       1.539211   55.470306             2.932951       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12 MASeparationRegime      Sep_Tight_<0.25%     461      36185.436806       1.756191   78.493355             3.217548       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod             Bull_2021      59       1627.094000       1.224122   27.577864             0.530406       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod            Covid_2020      47       7551.150000       2.826363  160.662766             2.213342       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod       Early_2012_2015     212       3161.298885       1.335330   14.911787             1.119597       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod    PreCovid_2016_2019     140      13787.487000       2.336674   98.482050             2.730739       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod   RateShock_Bear_2022      47      -6812.289000       0.573180 -144.942319            -1.203894       FAIL_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod      Recent_2024_2025      94      10462.562000       1.837266  111.303851             1.890710       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10       RegimePeriod         Recovery_2023      44       5890.104000       1.898684  133.866000             1.090485       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod             Bull_2021      44        825.749000       1.121370   18.767023             0.265471       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod            Covid_2020      27       7530.727000       3.624988  278.915815             2.125578       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod       Early_2012_2015     161       2076.788806       1.255208   12.899309             0.805393       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod    PreCovid_2016_2019      92      14370.641000       4.344984  156.202620             3.222587       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod   RateShock_Bear_2022      32      -2391.669000       0.764964  -74.739656            -0.481348       FAIL_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod      Recent_2024_2025      68      10450.377000       2.163967  153.682015             2.030782       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12       RegimePeriod         Recovery_2023      37       3322.823000       1.504069   89.806027             0.658882       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10          VolRegime          HighVol_>25%      66      10421.655000       2.215166  157.903864             2.088482       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10          VolRegime           LowVol_<12%     276      11940.131451       1.596154   43.261346             1.797175       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10          VolRegime         MidVol_12-25%     298      13138.940434       1.350287   44.090404             1.481858       PASS_REGIME
+  Baseline_70_120_ADX15_EXIT10          VolRegime            VolUnknown       3        166.680000       5.997901   55.560000             0.781206 LOW_TRADES_REVIEW
+CandidateB_70_160_ADX20_EXIT12          VolRegime          HighVol_>25%      46      11910.024000       2.994838  258.913565             2.391037       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12          VolRegime           LowVol_<12%     198      14158.671727       2.018646   71.508443             2.240906       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12          VolRegime         MidVol_12-25%     214      10097.191079       1.363784   47.183136             1.296293       PASS_REGIME
+CandidateB_70_160_ADX20_EXIT12          VolRegime            VolUnknown       3         19.550000       1.086386    6.516667             0.052768 LOW_TRADES_REVIEW
+
+--- CANDIDATE B MINUS BASELINE — ALL MARKETS ---
+         Dimension                Regime  Trades CandidateB  Trades Baseline  Trade Count Delta CandidateB-Baseline  Total Net Points CandidateB  Total Net Points Baseline  Net Points Delta CandidateB-Baseline  Profit Factor CandidateB  Profit Factor Baseline  PF Delta CandidateB-Baseline
+         ADXRegime      ADX_VeryHigh_>25              376.0              414                                  -38.0                 33252.444197               31680.478958                           1571.965239                  1.888143                1.825297                      0.062845
+         ADXRegime        ADX_High_20-25               85.0              106                                  -21.0                  2932.992609                7742.730912                          -4809.738303                  1.281699                1.699458                     -0.417760
+         ADXRegime         ADX_Mid_15-20                NaN              123                                    NaN                          NaN               -3755.802985                                   NaN                       NaN                0.774981                           NaN
+     DrawdownState Correction_-2_to_-10%              193.0              266                                  -73.0                 19371.757914               13644.611748                           5727.146166                  1.991407                1.477051                      0.514356
+     DrawdownState      NearATH_0_to_-2%              198.0              278                                  -80.0                  4863.118892                5356.479322                           -493.360430                  1.318121                1.256915                      0.061207
+     DrawdownState      Bear_-10_to_-20%               47.0               68                                  -21.0                 11604.295000               13173.629815                          -1569.334815                  2.447226                2.058329                      0.388897
+     DrawdownState        DeepBear_<-20%               23.0               31                                   -8.0                   346.265000                3492.686000                          -3146.421000                  1.069152                1.822083                     -0.752930
+        MA200State             Above200D              371.0              517                                 -146.0                 21723.655752               18715.237476                           3008.418276                  1.671699                1.411481                      0.260218
+        MA200State          MA200Unknown                9.0               10                                   -1.0                  -143.719765                 212.000624                           -355.720389                  0.690292                1.950464                     -1.260171
+        MA200State             Below200D               81.0              116                                  -35.0                 14605.500819               16740.168785                          -2134.667966                  1.970669                1.818923                      0.151746
+MASeparationRegime      Sep_Tight_<0.25%              461.0              643                                 -182.0                 36185.436806               35667.406885                            518.029921                  1.756191                1.539211                      0.216980
+      RegimePeriod   RateShock_Bear_2022               32.0               47                                  -15.0                 -2391.669000               -6812.289000                           4420.620000                  0.764964                0.573180                      0.191784
+      RegimePeriod    PreCovid_2016_2019               92.0              140                                  -48.0                 14370.641000               13787.487000                            583.154000                  4.344984                2.336674                      2.008310
+      RegimePeriod      Recent_2024_2025               68.0               94                                  -26.0                 10450.377000               10462.562000                            -12.185000                  2.163967                1.837266                      0.326701
+      RegimePeriod            Covid_2020               27.0               47                                  -20.0                  7530.727000                7551.150000                            -20.423000                  3.624988                2.826363                      0.798624
+      RegimePeriod             Bull_2021               44.0               59                                  -15.0                   825.749000                1627.094000                           -801.345000                  1.121370                1.224122                     -0.102752
+      RegimePeriod       Early_2012_2015              161.0              212                                  -51.0                  2076.788806                3161.298885                          -1084.510079                  1.255208                1.335330                     -0.080123
+      RegimePeriod         Recovery_2023               37.0               44                                   -7.0                  3322.823000                5890.104000                          -2567.281000                  1.504069                1.898684                     -0.394615
+         VolRegime           LowVol_<12%              198.0              276                                  -78.0                 14158.671727               11940.131451                           2218.540276                  2.018646                1.596154                      0.422492
+         VolRegime          HighVol_>25%               46.0               66                                  -20.0                 11910.024000               10421.655000                           1488.369000                  2.994838                2.215166                      0.779672
+         VolRegime            VolUnknown                3.0                3                                    0.0                    19.550000                 166.680000                           -147.130000                  1.086386                5.997901                     -4.911515
+         VolRegime         MidVol_12-25%              214.0              298                                  -84.0                 10097.191079               13138.940434                          -3041.749355                  1.363784                1.350287                      0.013497
+
+Files created:
+  fas_3b_trade_log_with_regimes.csv
+  fas_3b_regime_attribution_summary.csv
+  fas_3b_regime_comparison_candidate_vs_baseline.csv
+  fas_3b_yearly_regime_summary.csv
+  fas_3b_period_regime_summary.csv
+  fas_3b_2022_detail.csv
+  fas_3b_config_scorecard_by_regime.csv
+
+RESULT: REVIEW — look for regimes where Candidate B reduces losses without sacrificing too much profitable exposure.
+Candidate B är inte bara “bättre optimerad”. Den ändrar strategins karaktär på ett sätt som verkar rationellt. Den gör framför allt tre saker:
+tar bort trades i svag ADX-regim
+förbättrar 2022 kraftigt
+förbättrar PF i nästan alla viktiga regimer
+
+ADX-fyndet är väldigt viktigt. Baseline tar trades i ADX 15–20, resultat:
+123 trades
+-3755 net points
+PF 0.775
+FAIL
+Candidate B tar inga trades där eftersom ADX-kravet är 20. Det är ett väldigt starkt argument för Candidate B. Den filtrerar bort en bevisat
+dålig regim. Det här är exakt den typ av förbättring vi vill hitta, en parameterändring som har tydlig beteendeförklaring, inte bara bättre 
+backtest. 2022 förbättras kraftigt från -6812 och PF 0.573 till -2392 och PF 0.765. Candidate B gör fortfarande förlust 2022, men förlusten 
+minskar med cirka 4421 points. Det är den största praktiska förbättringen hittills. Det betyder inte att Candidate B “löser” bear markets, 
+men den gör strategin mycket mindre skadlig i den sämsta identifierade regimen. Candidate B förbättrar viktiga regimer, den slår baseline 
+tydligt i Above 200D (+3008 points och PF +0.26), Low vol (+2219 points och PF +0.42), High vol (+1488 points och PF +0.78), PreCovid 
+2016–2019 (+583 points och PF +2.01). Det här är bra eftersom förbättringen inte bara är koncentrerad till en enda marknadsperiod. Det som
+Candidate B tappar i jämfört med Baseline är Recovery 2023 (-2567 points), Early 2012–2015 (-1085 points), Bull 2021 (-801 points), Below 
+200D (-2135 points). Det här säger oss något viktigt, Candidate B är mer selektiv och långsammare. Den minskar brus och dåliga entries, men 
+kan missa delar av snabba återhämtningar. Det är en rimlig tradeoff. Candidate B bör bli ny huvudkandidat men vi ska köra sista bekräftelse 
+i Fas 3C - Trade Lifecycle. Frågan blir: Är Candidate B bättre för att den går in bättre, exit:ar bättre, eller båda?
