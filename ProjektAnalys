@@ -1384,3 +1384,133 @@ Candidate B tappar i jämfört med Baseline är Recovery 2023 (-2567 points), Ea
 200D (-2135 points). Det här säger oss något viktigt, Candidate B är mer selektiv och långsammare. Den minskar brus och dåliga entries, men 
 kan missa delar av snabba återhämtningar. Det är en rimlig tradeoff. Candidate B bör bli ny huvudkandidat men vi ska köra sista bekräftelse 
 i Fas 3C - Trade Lifecycle. Frågan blir: Är Candidate B bättre för att den går in bättre, exit:ar bättre, eller båda?
+==============================
+FAS 3C — TRADE LIFECYCLE ANALYSIS
+==============================
+Configs:
+  Baseline_70_120_ADX15_EXIT10: EMA 70/120, ADX 15, exit 10
+  CandidateB_70_160_ADX20_EXIT12: EMA 70/160, ADX 20, exit 12
+Lifecycle metrics: MFE, MAE, capture ratio, giveback, entry quality, post-exit continuation
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  US500: trades=202 | NetPts=2723.29 | PF=1.556 | AvgMFE=82.96 | AvgMAE=-44.24 | Capture=-5.088
+  USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | AvgMFE=299.15 | AvgMAE=-157.11 | Capture=-5.528
+  US30: trades=218 | NetPts=24090.29 | PF=1.591 | AvgMFE=632.15 | AvgMAE=-321.39 | Capture=-3.177
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  US500: trades=149 | NetPts=2787.78 | PF=1.768 | AvgMFE=91.69 | AvgMAE=-47.04 | Capture=-2.546
+  USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | AvgMFE=346.71 | AvgMAE=-162.73 | Capture=-5.910
+  US30: trades=156 | NetPts=23169.35 | PF=1.771 | AvgMFE=737.33 | AvgMAE=-349.16 | Capture=-2.752
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\.venv\Lib\site-packages\numpy\lib\_nanfunctions_impl.py:1213: RuntimeWarning: Mean of empty slice
+  return np.nanmean(a, axis, out=out, keepdims=keepdims)
+
+--- CONFIG LIFECYCLE SUMMARY ---
+                        Config  Trades  Win Rate  Total Net Points  Profit Factor  Expectancy  Trade Sharpe Approx  Avg Holding Days  Avg MFE Points  Avg MAE Points  Avg Net Capture Ratio  Avg Giveback % of MFE  Avg Entry ADX
+  Baseline_70_120_ADX15_EXIT10     643  0.423017      35667.406885       1.539211   55.470306             2.932951         14.368261      344.132138     -177.347957              -4.586762               5.580670      31.574405
+CandidateB_70_160_ADX20_EXIT12     461  0.453362      36185.436806       1.756191   78.493355             3.217548         18.053236      396.466802     -188.427946              -3.748433               4.743704      36.120055
+
+--- CANDIDATE B MINUS BASELINE — CONFIG LEVEL ---
+Comparison Level  Trades CandidateB  Trades Baseline  Trades Delta CandidateB-Baseline  Win Rate CandidateB  Win Rate Baseline  Win Rate Delta CandidateB-Baseline  Total Net Points CandidateB  Total Net Points Baseline  Total Net Points Delta CandidateB-Baseline  Profit Factor CandidateB  Profit Factor Baseline  Profit Factor Delta CandidateB-Baseline  Expectancy CandidateB  Expectancy Baseline  Expectancy Delta CandidateB-Baseline  Trade Sharpe Approx CandidateB  Trade Sharpe Approx Baseline  Trade Sharpe Approx Delta CandidateB-Baseline  Avg Holding Days CandidateB  Avg Holding Days Baseline  Avg Holding Days Delta CandidateB-Baseline  Median Holding Days CandidateB  Median Holding Days Baseline  Median Holding Days Delta CandidateB-Baseline  Avg MFE Points CandidateB  Avg MFE Points Baseline  Avg MFE Points Delta CandidateB-Baseline  Avg MAE Points CandidateB  Avg MAE Points Baseline  Avg MAE Points Delta CandidateB-Baseline  Median MFE Points CandidateB  Median MFE Points Baseline  Median MFE Points Delta CandidateB-Baseline  Median MAE Points CandidateB  Median MAE Points Baseline  Median MAE Points Delta CandidateB-Baseline  Avg MFE ATR CandidateB  Avg MFE ATR Baseline  Avg MFE ATR Delta CandidateB-Baseline  Avg MAE ATR CandidateB  Avg MAE ATR Baseline  Avg MAE ATR Delta CandidateB-Baseline  Avg Net Capture Ratio CandidateB  Avg Net Capture Ratio Baseline  Avg Net Capture Ratio Delta CandidateB-Baseline  Median Net Capture Ratio CandidateB  Median Net Capture Ratio Baseline  Median Net Capture Ratio Delta CandidateB-Baseline  Avg Winner Net Capture Ratio CandidateB  Avg Winner Net Capture Ratio Baseline  Avg Winner Net Capture Ratio Delta CandidateB-Baseline  Median Winner Net Capture Ratio CandidateB  Median Winner Net Capture Ratio Baseline  Median Winner Net Capture Ratio Delta CandidateB-Baseline  Avg Giveback % of MFE CandidateB  Avg Giveback % of MFE Baseline  Avg Giveback % of MFE Delta CandidateB-Baseline  Median Giveback % of MFE CandidateB  Median Giveback % of MFE Baseline  Median Giveback % of MFE Delta CandidateB-Baseline  Avg Entry ADX CandidateB  Avg Entry ADX Baseline  Avg Entry ADX Delta CandidateB-Baseline  Avg Entry EMA Sep % CandidateB  Avg Entry EMA Sep % Baseline  Avg Entry EMA Sep % Delta CandidateB-Baseline  Avg Close To Slow ATR CandidateB  Avg Close To Slow ATR Baseline  Avg Close To Slow ATR Delta CandidateB-Baseline  Avg Winner CandidateB  Avg Winner Baseline  Avg Winner Delta CandidateB-Baseline  Avg Loser CandidateB  Avg Loser Baseline  Avg Loser Delta CandidateB-Baseline
+      CONFIG_ALL                461              643                              -182             0.453362           0.423017                            0.030345                 36185.436806               35667.406885                                  518.029921                  1.756191                1.539211                                  0.21698              78.493355            55.470306                             23.023049                        3.217548                      2.932951                                       0.284597                    18.053236                  14.368261                                    3.684975                       13.208333                     10.083333                                          3.125                 396.466802               344.132138                                 52.334665                -188.427946              -177.347957                                -11.079989                       138.323                      118.64                                       19.683                       -92.204                     -85.038                                       -7.166               14.562264             13.170321                               1.391943               -7.143216             -8.363841                               1.220624                         -3.748433                       -4.586762                                         0.838329                            -0.113035                           -0.32023                                            0.207195                                  0.50345                               0.511088                                               -0.007639                                    0.534171                                   0.54337                                                    -0.0092                          4.743704                         5.58067                                        -0.836966                              1.11246                           1.319029                                           -0.206569                 36.120055               31.574405                                 4.545651                        0.008681                      0.005368                                       0.003312                          4.585987                        3.881102                                         0.704885             402.094138           374.319118                              27.77502           -189.889833          -178.29486                           -11.594973
+
+--- POST-EXIT CONTINUATION SUMMARY ---
+                        Config  Trades  Avg PostExit 5bar MaxHighMinusExit  Median PostExit 5bar MaxHighMinusExit  Pct PostExit 5bar FurtherUpside  Avg PostExit 5bar CloseMinusExit  Avg PostExit 10bar MaxHighMinusExit  Median PostExit 10bar MaxHighMinusExit  Pct PostExit 10bar FurtherUpside  Avg PostExit 10bar CloseMinusExit  Avg PostExit 20bar MaxHighMinusExit  Median PostExit 20bar MaxHighMinusExit  Pct PostExit 20bar FurtherUpside  Avg PostExit 20bar CloseMinusExit
+  Baseline_70_120_ADX15_EXIT10     643                           39.473279                                 14.600                         0.902022                         -3.914172                            61.085312                                   24.24                          0.931571                           1.847305                            90.527493                                  38.895                          0.953344                           2.418682
+CandidateB_70_160_ADX20_EXIT12     461                           40.676809                                 19.126                         0.902386                         -1.161601                            61.518537                                   26.50                          0.919740                           0.143352                            88.200979                                  36.281                          0.943601                          -3.299568
+
+Files created:
+  fas_3c_trade_lifecycle_log.csv
+  fas_3c_lifecycle_config_summary.csv
+  fas_3c_lifecycle_market_summary.csv
+  fas_3c_entry_quality_summary.csv
+  fas_3c_exit_quality_summary.csv
+  fas_3c_mfe_mae_bucket_summary.csv
+  fas_3c_post_exit_continuation_summary.csv
+  fas_3c_candidate_vs_baseline_lifecycle_comparison.csv
+  fas_3c_2022_lifecycle_detail.csv
+  fas_3c_lifecycle_scorecard.csv
+
+RESULT: REVIEW — determine whether Candidate B improves entry quality, adverse excursion, capture, or exit timing.
+Candidate B har högre genomsnittlig ADX vid entry 36.12 vs 31.57 och högre close-to-slow-EMA distans i ATR, 4.59 ATR vs 3.88 ATR. Det betyder att Candidate B
+går in när trenden redan är tydligare etablerad. Det matchar Fas 3B-fyndet där ADX 15-20 var en förslustregim för baseline. Candidate B får större trend-
+möjlighet, average MFE ökar från 344.13 till 396.47 och median ökar från 188.64 till 138.32, det betyder att Candidate B:S trades får mer favorable excursion.
+Den går alltså in i trades som i genomsnitt utvecklar större uppsida. Däremot blir inte MAE bättre, average MAE går från -177.35 till -188.43 och median från
+-85.04 till -92.20. Så den förbättrar inte genom att minska initial adverse excursion. Den tar färre och starkare trendtrades men har fortfarande normal
+pullback risk. Average winner capture är nästan samma 0.511 vs 0.503 och median 0.543 vs 0.534, det betyder att Candidate B inte fångar en större andel av
+vinnarnas MFE. Den får snarare bättre trades att fånga. Giveback är dock lite bättre 5.58 vs 4.74. Post-exit continuation visar ingen stor exit-edge
+Efter exit finns fortfarande vidare uppsida i över 90% av trades för båda modellerna. Det är normalt för en trendföljande exit: man lämnar ofta pengar kvar.
+Candidate B är inte tydligt bättre här. Candidate B:s förbättring kommer alltså från högre ADX-krav, långsammare slow EMA, färre svaga trendförsök, större 
+MFE per trade, längre holding period som allt leder till högre win rate och expectancy. Det här är en beteendemässigt rimlig förbättring, inte bara en
+statistisk optimering. Vår nya huvudkandidat är nu 70 / 160 / ADX 20 / Exit 12. Nu kör vi Fas 3D — Cross-Market Edge där vi vill se om edgen är diversifierad
+mellan US500, USTEC och US30.
+--- DAILY RETURN CORRELATION ---
+        US30  US500  USTEC
+US30   1.000  0.783  0.476
+US500  0.783  1.000  0.656
+USTEC  0.476  0.656  1.000
+
+--- DRAWDOWN CORRELATION ---
+        US30  US500  USTEC
+US30   1.000  0.802  0.602
+US500  0.802  1.000  0.650
+USTEC  0.602  0.650  1.000
+
+--- LEAVE-ONE-OUT CONTRIBUTION ---
+               Portfolio Excluded Market     CAGR     MaxDD   Sharpe  Sharpe Delta vs Full  CAGR Delta vs Full  MaxDD Delta vs Full
+ALL_MARKETS_EQUAL_WEIGHT            NONE 0.067912 -0.163209 0.774871              0.000000            0.000000             0.000000
+            EXCLUDE_US30            US30 0.065991 -0.188042 0.692914             -0.081958           -0.001922            -0.024833
+           EXCLUDE_US500           US500 0.067147 -0.159717 0.754771             -0.020101           -0.000765             0.003492
+           EXCLUDE_USTEC           USTEC 0.069586 -0.154451 0.791118              0.016246            0.001674             0.008758
+
+--- CROSS-MARKET SUMMARY ---
+                        Config          Markets  Total Trades  Avg Daily Return Corr  Max Daily Return Corr  Avg Drawdown Corr  Avg Position Overlap Both/Either %  % Days All 3 Markets Open  % Days 0 Markets Open  EqualWeight CAGR  EqualWeight MaxDD  EqualWeight Sharpe Worst Exclusion By Sharpe  Worst Exclusion Sharpe Delta Best Exclusion By Sharpe  Best Exclusion Sharpe Delta  Diversification Status                                                                                                                                                                                  Interpretation
+CandidateB_70_160_ADX20_EXIT12 US30,US500,USTEC           461               0.638445               0.782843             0.6846                           67.498286                  40.716697              25.084394          0.067912          -0.163209            0.774871                      US30                     -0.081958                    USTEC                     0.016246 HIGH_COMMON_BETA_REVIEW PASS means markets add meaningful independent timing. MIXED means useful but still common US-equity beta. HIGH_COMMON_BETA means treat the three markets mostly as one correlated risk cluster.
+
+Files created:
+  fas_3d_candidateb_trade_log.csv
+  fas_3d_daily_returns_by_market.csv
+  fas_3d_daily_pnl_by_market.csv
+  fas_3d_daily_equity_by_market.csv
+  fas_3d_daily_position_state.csv
+  fas_3d_market_scorecard.csv
+  fas_3d_position_overlap_summary.csv
+  fas_3d_simultaneous_positions_distribution.csv
+  fas_3d_daily_return_correlation.csv
+  fas_3d_daily_pnl_correlation.csv
+  fas_3d_drawdown_correlation.csv
+  fas_3d_bad_day_overlap_summary.csv
+  fas_3d_leave_one_out_marginal_contribution.csv
+  fas_3d_cross_market_summary.csv
+
+RESULT: REVIEW — diversification status: HIGH_COMMON_BETA_REVIEW. Use outputs to decide whether these markets are separate sleeves or one US-equity risk cluster.
+Daily return och drawdown korrelationen är tillräckligt för att säga att det diversifierar något men inte tillräckligt för att räknas som separata riskkällor. 
+Avg position overlap both/either: 67.5% och % dagar alla 3 öppna: 40.7%. Det betyder att när systemet går long US equities gör den ofta det samtidigt i flera index.
+Det är väntat för denna typ av strategi. Leave-one-out säger mycket, full portfölj har Sharpe: 0.775 och MaxDD: -16.3%, exkluderar vi US30 får vi Sharpe: 0.693 och
+MaxDD: -18.8%. Exkludera USTEC, Sharpe: 0.791 och MaxDD: -15.4%, exkluderar vi US500 får vi Sharpe: 0.755 och MaxDD: -15.9%. US30 är alltså mest värdefull och att 
+USTEC inte förbättrar denna equal-weight-portfölj isolerat. Den kan fortfarande vara värdefull i en större portfölj, men den är inte nödvändig i denna trendmodul.
+Våran tolkning av detta resultat är att vi ska behålla US30 som starkaste diversifierande bidrag och US500 som central benchmark/riskbärare. USTEC är mer tveksam, 
+den bidrar med return men också mer gemensam risk. I en större portfölj kan den få lägre vikt eller bara användas om den förbättrar helhetsportföljen. I portfölj-
+konstruktionen bör vi därför riskvikta den som en klustrad equity-beta/trend-komponent. Nästa steg i Fas 3 är 3E — Explain Candidate B vs Baseline på trade 
+match-nivå, men eftersom vi redan valt Candidate B kan 3E göras kortare: fokus på vilka Baseline-trades Candidate B filtrerar bort och hur mycket de förbättrar 
+2022/ADX 15–20-regimen.
