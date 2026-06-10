@@ -1514,3 +1514,88 @@ den bidrar med return men också mer gemensam risk. I en större portfölj kan d
 konstruktionen bör vi därför riskvikta den som en klustrad equity-beta/trend-komponent. Nästa steg i Fas 3 är 3E — Explain Candidate B vs Baseline på trade 
 match-nivå, men eftersom vi redan valt Candidate B kan 3E göras kortare: fokus på vilka Baseline-trades Candidate B filtrerar bort och hur mycket de förbättrar 
 2022/ADX 15–20-regimen.
+==============================
+FAS 3E — EXPLAIN CANDIDATE B VS BASELINE
+==============================
+Baseline:   EMA 70/120, ADX 15, exit 10
+CandidateB: EMA 70/160, ADX 20, exit 12
+Method: overlapping trade waves + baseline-filter attribution
+
+WARNING: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+WARNING: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+WARNING: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+
+Running config: Baseline_70_120_ADX15_EXIT10
+  US500: trades=202 | NetPts=2723.29 | PF=1.556 | Exp=13.48
+  USTEC: trades=223 | NetPts=8853.83 | PF=1.432 | Exp=39.70
+  US30: trades=218 | NetPts=24090.29 | PF=1.591 | Exp=110.51
+
+Running config: CandidateB_70_160_ADX20_EXIT12
+  US500: trades=149 | NetPts=2787.78 | PF=1.768 | Exp=18.71
+  USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | Exp=65.57
+  US30: trades=156 | NetPts=23169.35 | PF=1.771 | Exp=148.52
+
+--- WAVE CLASS SUMMARY ---
+                         Wave Class  Waves  Baseline Trades  CandidateB Trades  Baseline Net Points  CandidateB Net Points  CandidateB Minus Baseline  Avg Delta Per Wave
+BASELINE_ONLY_FILTERED_BY_CANDIDATE    128              128                  0         -6749.184000               0.000000                6749.184000           52.728000
+      CANDIDATE_ONLY_NEW_OR_SHIFTED     16                0                 16             0.000000            -854.425000                -854.425000          -53.401563
+                  BOTH_OVERLAP_WAVE    445              515                445         42416.590885           37039.861806               -5376.729079          -12.082537
+
+--- FILTERED BASELINE WAVES BY ADX BUCKET ---
+Primary ADX Bucket  Waves  Baseline Trades  CandidateB Trades  Baseline Net Points  CandidateB Net Points  CandidateB Minus Baseline  Avg Delta Per Wave
+     ADX_Mid_15-20     73               73                  0            -2369.862                    0.0                   2369.862           32.463863
+    ADX_High_20-25     20               20                  0            -2191.121                    0.0                   2191.121          109.556050
+  ADX_VeryHigh_>25     35               35                  0            -2188.201                    0.0                   2188.201           62.520029
+
+--- 2022 WAVE ATTRIBUTION ---
+                         Wave Class  Waves  Baseline Trades  CandidateB Trades  Baseline Net Points  CandidateB Net Points  CandidateB Minus Baseline  Avg Delta Per Wave
+BASELINE_ONLY_FILTERED_BY_CANDIDATE     14               14                  0            -5670.694                  0.000                   5670.694          405.049571
+      CANDIDATE_ONLY_NEW_OR_SHIFTED      1                0                  1                0.000                 75.450                     75.450           75.450000
+                  BOTH_OVERLAP_WAVE     31               33                 31            -1141.595              -2467.119                  -1325.524          -42.758839
+
+--- FINAL EXPLANATION SCORECARD ---
+                                Metric     Baseline   CandidateB  CandidateB Minus Baseline                                                          Interpretation
+                      Total Net Points 35667.406885 36185.436806                 518.029921                                             Full-trade aggregate delta.
+                                Trades   643.000000   461.000000                -182.000000            CandidateB should use fewer trades if it is filtering noise.
+                         Profit Factor     1.539211     1.756191                   0.216980                            Higher PF indicates cleaner trade selection.
+    Filtered Baseline Waves Net Points -6749.184000     0.000000                6749.184000 Positive delta means CandidateB removed net-losing baseline-only waves.
+                    Shared Waves Delta 42416.590885 37039.861806               -5376.729079      Shows whether CandidateB improves trades in the same market waves.
+       Candidate-Only Waves Net Points     0.000000  -854.425000                -854.425000                    Shows value from candidate-only shifted/new entries.
+     Filtered 2022 Baseline Net Points -5670.694000     0.000000                5670.694000 Positive delta means CandidateB filtered losing baseline waves in 2022.
+Filtered ADX 15-20 Baseline Net Points -2369.862000     0.000000                2369.862000 Positive delta confirms the ADX20 filter removes a bad ADX15-20 region.
+
+RESULT: REVIEW — CandidateB is explained if filtered baseline-only waves are net negative, especially in ADX 15-20 and 2022, while shared waves do not materially deteriorate.
+Candidate B förbättrar inte för att den gör samma trades bättre. Den förbättrar för att den filtrerar bort dåliga Baseline-trades. Baseline-only trades som Candidate B
+filtrerar bort:
+128 waves
+Baseline net points: -6749
+CandidateB: 0
+Delta: +6749
+Candidate B undvek alltså ett stort block av nettoförlorande trades. Men Candidate B försämrar vissa shared waves:
+Baseline: +42416
+CandidateB: +37040
+Delta: -5377
+Det betyder att när båda modellerna är med i samma trendvåg gör Baseline ofta mer PnL, sannolikt eftersom den kommer in tidigare/snabbare. Det här är priset Candidate B betalar
+för att vara mer selektiv. Candidate-only/new/shifted waves:
+-854
+Det betyder att candidate B inte hittar massa nya bättre trades. Den är bättre eftersom den säger nej oftare. Det är en mycket viktig slutsats. 2022-förklaringen är extremt stark:
+Baseline-only filtered: -5671
+Shared waves delta: -1326
+Candidate-only: +75
+Det betyder att candidate B förbättrar 2022 nästan helt genom att filtrera bort Baseline-trades som aldrig borde ha tagits. Det är exakt vad vi ville se. ADX-förklaringen är också
+bekräftad, filtered ADX 15–20:
+-2369
+Candidate B tar inga trades där.
+Det bekräftar Fas 3B:
+ADX 15–20 var en negativ regim. ADX 20-filter är rationellt.
+Ny huvudmodell:
+EMA fast: 70
+EMA slow: 160
+ADX threshold: 20
+Exit confirm bars: 12
+Men med en viktig mental modell:
+Candidate B är inte bättre för att den maximerar upside, den är bättre för att den minskar falska trendförsök och 2022-liknande skada.
+
