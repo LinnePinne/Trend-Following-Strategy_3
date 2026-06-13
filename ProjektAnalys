@@ -1597,5 +1597,212 @@ EMA slow: 160
 ADX threshold: 20
 Exit confirm bars: 12
 Men med en viktig mental modell:
-Candidate B är inte bättre för att den maximerar upside, den är bättre för att den minskar falska trendförsök och 2022-liknande skada.
+Candidate B är inte bättre för att den maximerar upside, den är bättre för att den minskar falska trendförsök och 2022-liknande skada. Nu blir Candidate B ny 
+baseline. Nästa steg är fas 4 Strategislutförande och operativ beredskap. Målet är att göra TF_EQ färdig som självständig strategi-modul. Vi lägger upp fas
+4a såhär:
+Fas 4A — Final Standalone Strategy Profile
+Mål:
+Bygga en ren profil för TF_EQ som strategi.
+Mät:
+yearly returns
+monthly returns
+rolling 3M / 6M / 12M performance
+drawdown events
+longest flat period
+exposure per år
+trade frequency per år
+market-level contribution
+Detta svarar på:
+Hur beter sig TF_EQ över tid som egen strategi?
 
+Fas 4B — Failure Mode Analysis
+Mål:
+Förstå när TF_EQ går dåligt.
+Analysera:
+2022
+2015
+2018
+sämsta månaderna
+sämsta rolling 20D / 60D / 120D-perioderna
+sämsta trades
+om förluster kommer från en marknad eller hela klustret
+om förluster sker vid hög/låg ADX
+om förluster sker över/under 200D
+Detta blir strategins “risk manual”.
+
+Fas 4C — Execution & Live Rulebook
+Mål:
+Göra strategin live-redo.
+Definiera exakt:
+när signal beräknas
+när order läggs
+entry price assumption
+exit price assumption
+vad som händer vid missing bars
+vad som händer vid duplicerade timestamps
+vad som händer om spread saknas
+hur forced exit hanteras
+hur signaler exporteras
+hur position state exporteras
+Detta är viktigt för att undvika att live-versionen avviker från backtesten.
+
+Fas 4D — Final Code Hardening
+Mål:
+Göra koden renare, säkrare och mer modulär.
+Exempel:
+separera config från motor
+separera data loading från strategy logic
+lägga in tydliga sanity checks
+exportera trades/signals/equity konsekvent
+göra scriptet lätt att återköra
+lägga in versionsnamn, t.ex. TF_EQ_v1_70_160_ADX20_EXIT12
+
+Fas 4E — Acceptance / Rejection Criteria
+Mål:
+Dokumentera varför TF_EQ accepteras.
+Exempel:
+TF_EQ accepteras om:
+Fas 1 integrity är PASS
+Fas 2 parameter robustness är PASS
+Candidate B är vald som huvudmodell
+2022-förlust är förstådd
+cross-market common beta är dokumenterat
+kostnadsstress är godkänd
+failure modes är kända
+live rules är definierade
+Detta blir “final sign-off”.
+==============================
+FAS 4A — FINAL CANDIDATE STANDALONE PROFILE
+==============================
+Candidate: EMA 70/160, ADX 20, exit 12
+Costs: spread=0.8, slippage=0.5, commissionRT=0.1
+Portfolio default: cash-only=True, target/max gross=1.0/1.0
+WARNING: US500: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+US500: trades=149 | NetPts=2787.78 | PF=1.768 | Exp=18.71
+WARNING: USTEC: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | Exp=65.57
+WARNING: US30: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+US30: trades=156 | NetPts=23169.35 | PF=1.771 | Exp=148.52
+
+[Portfolio] Weights used:
+  US30: 0.3333
+  US500: 0.3333
+  USTEC: 0.3333
+C:\Users\linus\PycharmProjects\SwingTrendFollowing3\Portfolio_Simulation_Fas4A_Final_Candidate_Profile.py:585: FutureWarning: 'M' is deprecated and will be removed in a future version, please use 'ME' instead.
+  monthly = (1.0 + daily_returns).resample("M").prod() - 1.0
+
+--- PORTFOLIO METRICS ---
+Equity Start: 50000.000000
+Equity End: 126412.790388
+CAGR: 0.068879
+Max Drawdown %: -16.345450
+Sharpe Ann: 0.784826
+Calmar: 0.421395
+Avg Daily Return: 0.000254
+Daily Vol: 0.005140
+Ann Vol: 0.081593
+
+--- SLEEVE SCORECARD ---
+Equity Start                                  50000.0
+Equity End                              126412.790388
+CAGR                                         0.068879
+Max Drawdown %                              -16.34545
+Sharpe Ann                                   0.784826
+Calmar                                       0.421395
+Avg Daily Return                             0.000254
+Daily Vol                                     0.00514
+Ann Vol                                      0.081593
+Positive Years                                     10
+Negative Years                                      4
+Worst Calendar Year %                      -10.046776
+Best Calendar Year %                        22.494139
+Worst Rolling 12M_252D %                    -13.80698
+Median Rolling 12M_252D %                    6.870052
+Positive Rolling 12M_252D Rate %                81.75
+Worst Rolling 3M_63D %                      -8.329299
+Median Rolling 3M_63D %                      1.597389
+Positive Rolling 3M_63D Rate %              68.171021
+Worst Rolling 6M_126D %                    -10.609612
+Median Rolling 6M_126D %                     3.035881
+Positive Rolling 6M_126D Rate %             72.866345
+Deepest DD Start                  2022-08-17 00:00:00
+Deepest DD Trough Date            2023-05-31 00:00:00
+Deepest DD Recovery Date          2024-07-03 00:00:00
+Deepest DD Duration Days                          686
+Longest Underwater Start          2022-08-17 00:00:00
+Longest Underwater Recovery Date  2024-07-03 00:00:00
+Longest Underwater Days                           686
+Longest Consecutive Down Days                       6
+Down Streak Start                 2012-12-12 00:00:00
+Down Streak End                   2012-12-17 00:00:00
+Total Trades                                      461
+Avg Trades Per Year                         32.928571
+Avg Gross Exposure %                        54.971338
+Max Gross Exposure %                            100.0
+Avg Open Positions                           1.644952
+Max Open Positions                                3.0
+
+--- WORST ROLLING PERIODS ---
+  Window  Rank Approx Window Start Date Window End Date  Window Days  Rolling Return %
+12M_252D     1               2022-11-24      2023-08-03          252        -13.806980
+12M_252D     2               2022-11-23      2023-08-02          252        -13.421839
+12M_252D     3               2022-11-28      2023-08-07          252        -13.287873
+  3M_63D     1               2022-11-01      2023-01-03           63         -8.329299
+  3M_63D     2               2022-09-07      2022-11-09           63         -8.234250
+  3M_63D     3               2021-12-16      2022-02-17           63         -8.028834
+ 6M_126D     1               2023-01-13      2023-05-19          126        -10.609612
+ 6M_126D     2               2023-01-16      2023-05-22          126        -10.369467
+ 6M_126D     3               2023-01-12      2023-05-18          126        -10.160530
+
+--- TOP DRAWDOWN EVENTS ---
+     Start Trough Date Recovery Date  Duration Days  Trough Drawdown %  Peak Equity Before Event  Rank By Depth
+2022-08-17  2023-05-31    2024-07-03            686         -15.972656             114785.782166              1
+2021-11-09  2022-07-18    2022-08-12            276          -9.711241             113319.384347              2
+2015-03-03  2016-02-18    2016-07-20            505          -9.009625              62476.393344              3
+2024-11-12  2025-04-23    2025-05-14            183          -8.610662             119363.520325              4
+2018-01-29  2019-01-03    2019-02-05            372          -7.488656              77673.964936              5
+2020-01-24  2020-04-01    2020-04-14             81          -7.464439              87418.471734              6
+2012-04-03  2012-11-20    2013-05-15            407          -7.062618              52081.212395              7
+2020-06-09  2020-06-11    2020-08-06             58          -5.977451              93318.777130              8
+2013-05-22  2013-06-28    2013-09-11            112          -5.958901              52451.344561              9
+2020-09-03  2020-10-02    2020-10-12             39          -5.513123             100786.231629             10
+
+RESULT: REVIEW — use this standalone profile to define the sleeve's role before portfolio-level weighting/scaling.
+Strategin är stabil men långsam med tydlig trendföljande profil, nyckeltal:
+CAGR: 6.89%
+Ann vol: 8.16%
+Sharpe: 0.78
+Max DD: -16.35%
+Calmar: 0.42
+Positive years: 10
+Negative years: 4
+Avg gross exposure: 55.0%
+Max gross exposure: 100%
+Total trades: 461
+Avg trades/year: 32.9
+Det är rimligt för en long-only equity trendmodell utan leverage och med bara cirka 55% genomsnittlig exponering. Största risken är inte max 
+drawdown i sig. Den största risken är underwater duration:
+Deepest DD start: 2022-08-17
+Trough: 2023-05-31
+Recovery: 2024-07-03
+Duration: 686 dagar
+Det betyder att TF_EQ kan ligga under vatten i nästan två år, det är normalt för trendföljande equity-strategier, men viktigt att dokumentera. Rolling performance 
+ser acceptabel ut
+Worst rolling 12M: -13.81%
+Median rolling 12M: +6.87%
+Positive rolling 12M rate: 81.75%
+Det är bra.
+Men:
+Worst rolling 3M: -8.33%
+Worst rolling 6M: -10.61%
+Det visar att strategin kan ha ganska jobbiga kort-/medelfristiga perioder, särskilt runt 2022–2023. Drawdown events bekräftar tidigare fynd, de största problemen 
+kommer från:
+2022–2024 drawdown
+2021–2022 bear/rate-shock
+2015–2016
+2018
+covid 2020
+Det är exakt de regimer vi redan identifierat. Så Fas 4A bekräftar att strategin är en robust men regimberoende long-only US equity trendmodell.
