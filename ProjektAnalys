@@ -1805,4 +1805,150 @@ kommer från:
 2015–2016
 2018
 covid 2020
-Det är exakt de regimer vi redan identifierat. Så Fas 4A bekräftar att strategin är en robust men regimberoende long-only US equity trendmodell.
+Det är exakt de regimer vi redan identifierat. Så Fas 4A bekräftar att strategin är en robust men regimberoende long-only US equity trendmodell. Fas 4B nu:
+==============================
+FAS 4B — TF_EQ FAILURE MODE ANALYSIS
+==============================
+Candidate: EMA 70/160, ADX 20, exit 12
+Costs: spread=0.8, slippage=0.5, commissionRT=0.1
+Scope: TF_EQ standalone only — no portfolio integration / no external strategy weighting.
+WARNING: US500: US500_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US500: rows=77980 | first=2012-01-16 01:00:00 | last=2025-10-31 21:00:00
+US500: trades=149 | NetPts=2787.78 | PF=1.768 | Exp=18.71
+WARNING: USTEC: USTEC_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded USTEC: rows=77828 | first=2012-01-19 17:00:00 | last=2025-10-31 21:00:00
+USTEC: trades=156 | NetPts=10228.30 | PF=1.721 | Exp=65.57
+WARNING: US30: US30_1H_2012-now.csv har 4 duplicerade timestamp-rader. Behåller sista raden per timestamp.
+Loaded US30: rows=78591 | first=2012-04-04 15:00:00 | last=2025-12-19 22:00:00
+US30: trades=156 | NetPts=23169.35 | PF=1.771 | Exp=148.52
+
+[Portfolio] Weights used:
+  US30: 0.3333
+  US500: 0.3333
+  USTEC: 0.3333
+
+--- FAILURE SCORECARD ---
+Strategy                         TF_EQ_v1_70_160_ADX20_EXIT12
+CAGR                                                 0.068879
+Sharpe Ann                                           0.784826
+Max Drawdown %                                      -16.34545
+Calmar                                               0.421395
+Worst Day                                 2020-06-11 00:00:00
+Worst Day Return %                                  -5.530824
+Worst Day Open Positions                                  3.0
+Worst Day All 3 Open                                     True
+Worst Month                                           2022-12
+Worst Month Return %                                -7.465721
+Worst Rolling 12M_252D %                            -13.80698
+Worst Rolling 12M_252D Start              2022-08-17 00:00:00
+Worst Rolling 12M_252D End                2023-08-03 00:00:00
+Worst Rolling 1M_20D %                               -8.66949
+Worst Rolling 1M_20D Start                2022-11-25 00:00:00
+Worst Rolling 1M_20D End                  2022-12-22 00:00:00
+Worst Rolling 3M_60D %                              -8.395278
+Worst Rolling 3M_60D Start                2022-08-16 00:00:00
+Worst Rolling 3M_60D End                  2022-11-04 00:00:00
+Worst Rolling 6M_120D %                            -10.594799
+Worst Rolling 6M_120D Start               2022-08-15 00:00:00
+Worst Rolling 6M_120D End                 2023-01-30 00:00:00
+Deepest DD Start                          2022-08-17 00:00:00
+Deepest DD Trough                         2023-05-31 00:00:00
+Deepest DD Recovery                       2024-07-03 00:00:00
+Deepest DD Duration Days                                  686
+Deepest DD %                                       -15.972656
+Worst Trade Market                                       US30
+Worst Trade Entry                         2022-12-13 16:00:00
+Worst Trade Exit                          2022-12-16 06:00:00
+Worst Trade Net Points                               -1430.69
+Fail Regime Count                                          10
+Worst Failure Regime                          Entry Year=2022
+Worst Failure Regime Net Points                     -2391.669
+Worst Named Period                             RateShock_2022
+Worst Named Period Net Points                       -2330.668
+
+--- WORST DAYS ---
+ Rank       Date  Daily Return %  Daily PnL $    Equity End  Gross Exposure %  Open Positions  All 3 Markets Open  Trades Entered Today  Trades Exited Today  Exit Net Points Today Exit Markets Today  US30 Open  US500 Open  USTEC Open
+    1 2020-06-11       -5.530824 -5136.895762  87740.693348        100.000000             3.0                True                     0                    0                    0.0                             1           1           1
+    2 2020-09-03       -3.638616 -3667.224214  97119.007415        100.000000             3.0                True                     0                    0                    0.0                             1           1           1
+    3 2018-12-04       -3.296656 -2495.001003  73187.773933        100.000000             3.0                True                     0                    0                    0.0                             1           1           1
+    4 2022-09-13       -3.181911 -3541.044545 107745.688795         65.844559             2.0               False                     0                    0                    0.0                             1           0           1
+    5 2022-10-07       -2.936455 -3145.519110 103974.088881         99.878010             3.0                True                     0                    0                    0.0                             1           1           1
+    6 2022-12-15       -2.925878 -2993.806497  99327.827674         99.430908             3.0                True                     0                    0                    0.0                             1           1           1
+    7 2020-04-01       -2.904379 -2419.722027  80893.172855         65.186009             2.0               False                     0                    0                    0.0                             1           1           0
+    8 2021-01-27       -2.670964 -2835.117266 103310.715975         66.404412             2.0               False                     0                    0                    0.0                             0           1           1
+    9 2022-11-02       -2.660305 -2867.899472 104935.493923        100.000000             3.0                True                     0                    0                    0.0                             1           1           1
+   10 2025-10-10       -2.526781 -3174.372545 122454.743294        100.000000             3.0                True                     0                    0                    0.0                             1           1           1
+
+--- WORST MONTHS ---
+ Rank   Month  Monthly Return %  Trades Entered  Trades Exited  Exit Net Points  Exit Net Points US30  Exit Net Points US500  Exit Net Points USTEC
+    1 2022-12         -7.465721               5              6          548.647              1949.422               -278.165              -1122.610
+    2 2013-06         -5.125363               9              7         -808.177              -724.800                -86.922                  3.545
+    3 2022-06         -4.237930               2              3           62.864                75.450                -54.306                 41.720
+    4 2022-02         -3.422163               4              4        -1485.975              -412.600               -127.057               -946.318
+    5 2022-04         -3.304229               1              4           13.018              -659.752                152.960                519.810
+    6 2015-03         -3.219993               3              6           14.312               -39.161                  7.645                 45.828
+    7 2025-03         -3.062106               3              3        -1899.070              -884.348               -159.324               -855.398
+    8 2024-04         -2.950888               4              4         -233.642                56.288                174.901               -464.831
+    9 2020-09         -2.933499               3              3         2270.179              1468.680                284.509                516.990
+   10 2024-12         -2.898835               3              4         -430.033               505.850               -269.369               -666.514
+
+--- WORST ROLLING PERIODS ---
+  Window  Window Days  Rank Start Date   End Date  Rolling Return %
+  1M_20D           20     1 2022-11-25 2022-12-22         -8.669490
+  1M_20D           20     2 2022-11-24 2022-12-21         -8.452786
+  1M_20D           20     3 2022-11-28 2022-12-23         -8.373521
+  3M_60D           60     1 2022-08-16 2022-11-04         -8.395278
+  3M_60D           60     2 2022-08-15 2022-11-03         -8.361711
+  3M_60D           60     3 2022-10-06 2022-12-28         -8.329299
+ 6M_120D          120     1 2022-08-15 2023-01-30        -10.594799
+ 6M_120D          120     2 2022-11-25 2023-05-11        -10.570655
+ 6M_120D          120     3 2022-08-16 2023-01-31        -10.409964
+12M_252D          252     1 2022-08-17 2023-08-03        -13.806980
+12M_252D          252     2 2022-08-16 2023-08-02        -13.421839
+12M_252D          252     3 2022-08-19 2023-08-07        -13.287873
+
+--- WORST TRADES ---
+Market     Entry Fill Time      Exit Fill Time  Net Points  Holding Days Entry ADX Regime Entry Vol Regime Entry MA200 State  Entry Drawdown State
+  US30 2022-12-13 16:00:00 2022-12-16 06:00:00   -1430.690      2.583333      ADX_Above25    MidVol_12_25%         Above200D Correction_-2_to_-10%
+  US30 2022-04-20 00:00:00 2022-04-25 12:00:00   -1344.152      5.500000      ADX_Above25    MidVol_12_25%         Above200D Correction_-2_to_-10%
+  US30 2020-03-26 18:00:00 2020-04-03 18:00:00   -1245.740      8.000000        ADX_20_25     HighVol_>25%         Below200D        DeepBear_<-20%
+  US30 2024-07-29 04:00:00 2024-08-05 01:00:00   -1212.424      6.875000      ADX_Above25      LowVol_<12%         Above200D      NearATH_0_to_-2%
+  US30 2020-05-08 06:00:00 2020-05-13 21:00:00   -1077.360      5.625000      ADX_Above25     HighVol_>25%         Below200D      Bear_-10_to_-20%
+  US30 2022-09-12 00:00:00 2022-09-14 18:00:00   -1072.402      2.750000        ADX_20_25    MidVol_12_25%         Below200D      Bear_-10_to_-20%
+  US30 2025-03-20 16:00:00 2025-03-31 13:00:00    -884.348     10.875000      ADX_Above25    MidVol_12_25%         Below200D Correction_-2_to_-10%
+ USTEC 2025-03-24 07:00:00 2025-03-31 04:00:00    -855.398      6.875000        ADX_20_25    MidVol_12_25%         Below200D Correction_-2_to_-10%
+  US30 2022-10-05 02:00:00 2022-10-10 15:00:00    -830.538      5.541667      ADX_Above25    MidVol_12_25%         Below200D      Bear_-10_to_-20%
+  US30 2021-12-07 13:00:00 2021-12-20 18:00:00    -825.248     13.208333      ADX_Above25    MidVol_12_25%         Above200D      NearATH_0_to_-2%
+  US30 2024-04-23 17:00:00 2024-05-01 12:00:00    -770.088      7.791667        ADX_20_25      LowVol_<12%         Above200D Correction_-2_to_-10%
+  US30 2021-05-18 03:00:00 2021-05-19 16:00:00    -745.410      1.541667        ADX_20_25    MidVol_12_25%         Above200D Correction_-2_to_-10%
+  US30 2021-07-09 16:00:00 2021-07-20 01:00:00    -731.410     10.375000        ADX_20_25      LowVol_<12%         Above200D      NearATH_0_to_-2%
+  US30 2025-11-11 16:00:00 2025-11-17 20:00:00    -725.330      6.166667      ADX_Above25      LowVol_<12%         Above200D      NearATH_0_to_-2%
+  US30 2023-04-28 22:00:00 2023-05-04 11:00:00    -710.612      5.541667      ADX_Above25    MidVol_12_25%         Above200D Correction_-2_to_-10%
+
+--- WORST REGIMES BY NET POINTS ---
+           Dimension                Regime  Trades   Net Points  Profit Factor  Expectancy  Win Rate  Avg Holding Days            Status
+    Entry ADX Regime             ADX_20_25      85  2932.992609       1.281699   34.505795  0.411765         15.886275       PASS_REGIME
+    Entry ADX Regime           ADX_Above25     376 33252.444197       1.888143   88.437352  0.462766         18.543107       PASS_REGIME
+Entry Drawdown State        DeepBear_<-20%      21  -466.958000       0.904615  -22.236095  0.285714         14.537698       FAIL_REGIME
+Entry Drawdown State      NearATH_0_to_-2%     228 10038.811562       1.610643   44.029875  0.447368         18.364949       PASS_REGIME
+Entry Drawdown State      Bear_-10_to_-20%      40 12628.129000       3.054994  315.703225  0.500000         22.639583       PASS_REGIME
+Entry Drawdown State Correction_-2_to_-10%     172 13985.454244       1.686506   81.310780  0.470930         17.002665       PASS_REGIME
+   Entry MA200 State         MA200_Unknown       9  -143.719765       0.690292  -15.968863  0.222222         17.824074       FAIL_REGIME
+   Entry MA200 State             Below200D      68 12800.987804       2.056317  188.249821  0.514706         21.393995       PASS_REGIME
+   Entry MA200 State             Above200D     384 23528.168767       1.667093   61.271273  0.447917         17.467014       PASS_REGIME
+    Entry Vol Regime           Vol_Unknown       3    19.550000       1.086386    6.516667  0.333333         32.888889 LOW_TRADES_REVIEW
+    Entry Vol Regime         MidVol_12_25%     219  7260.838972       1.258742   33.154516  0.442922         17.078957       PASS_REGIME
+    Entry Vol Regime           LowVol_<12%     192 14372.624834       2.051599   74.857421  0.421875         17.734592       PASS_REGIME
+    Entry Vol Regime          HighVol_>25%      47 14532.423000       3.464618  309.200489  0.638298         22.947695       PASS_REGIME
+          Entry Year                  2022      32 -2391.669000       0.764964  -74.739656  0.312500         14.053385       FAIL_REGIME
+          Entry Year                  2015      34 -1586.842000       0.511200  -46.671824  0.294118         16.140931       FAIL_REGIME
+          Entry Year                  2012      38  -595.050673       0.650790  -15.659228  0.289474         11.379386       FAIL_REGIME
+          Entry Year                  2018      25  -137.173000       0.912472   -5.486920  0.560000         13.460000       FAIL_REGIME
+          Entry Year                  2021      44   825.749000       1.121370   18.767023  0.477273         15.218750       PASS_REGIME
+           Exit Year                  2022      35 -2330.668000       0.779930  -66.590514  0.342857         14.178571       FAIL_REGIME
+           Exit Year                  2023      34 -1720.701000       0.738971  -50.608853  0.264706         10.265931       FAIL_REGIME
+           Exit Year                  2015      34 -1269.300000       0.566624  -37.332353  0.294118         17.014706       FAIL_REGIME
+           Exit Year                  2012      38  -595.050673       0.650790  -15.659228  0.289474         11.379386       FAIL_REGIME
+           Exit Year                  2021      42   801.954000       1.125526   19.094143  0.476190         15.351190       PASS_REGIME
+
+RESULT: REVIEW — use these outputs to write TF_EQ's failure-mode manual: when it loses, why it loses, and what market conditions are dangerous.
